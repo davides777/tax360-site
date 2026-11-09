@@ -168,7 +168,10 @@ def test_pubblicazione_e_ritiro(tmp_path):
     assert "Entrata in vigore" in page and "1 luglio 2026" in page
     items, _ = publish.read_index(site)
     assert items[0]["slug"] == d["slug"] and items[0]["url"] == "news/" + d["slug"] + ".html"
-    r2 = publish.publish(copy.deepcopy(d), site, FONTI, today="2026-11-12")      # stessa bozza: aggiorna, non duplica
+    r1b = publish.publish(copy.deepcopy(d), site, FONTI, today="2026-11-11")     # identica: nessun "Aggiornato il"
+    assert r1b.get("invariato") and "Aggiornato il" not in open(r["file"], encoding="utf-8").read()
+    d2 = copy.deepcopy(d); d2["corpo"] += "\n\nPrecisazione aggiunta."
+    r2 = publish.publish(d2, site, FONTI, today="2026-11-12")                     # corretta: aggiorna, non duplica
     assert r2["aggiornato"] and len(publish.read_index(site)[0]) == 1
     assert "Aggiornato il 12 novembre 2026" in open(r2["file"], encoding="utf-8").read()
     publish.unpublish(d["slug"], site)

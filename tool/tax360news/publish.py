@@ -223,10 +223,15 @@ def publish(draft, site_dir, fonti, today=None):
     existing = next((x for x in items if x["slug"] == draft["slug"]), None)
     d = dict(draft)
     d["pubblicataIl"] = (existing or {}).get("data") or d.get("pubblicataIl") or today
-    if existing:
-        d["aggiornataIl"] = today
+    d.pop("aggiornataIl", None)
     os.makedirs(os.path.join(site_dir, "news"), exist_ok=True)
     path = os.path.join(site_dir, "news", f"{d['slug']}.html")
+    if existing and os.path.exists(path):
+        old = open(path, encoding="utf-8").read()
+        base = render_article(d, site_dir, today)
+        if re.sub(r" &middot; Aggiornato il [^<]+", "", old) == base:
+            return {"url": f"{SITE_URL}/news/{d['slug']}", "file": path, "aggiornato": False, "invariato": True}
+        d["aggiornataIl"] = today
     open(path, "w", encoding="utf-8").write(render_article(d, site_dir, today))
     first_uff = next((f for f in d.get("fontiUfficiali") or [] if f.get("aperta")), {})
     entry = {"data": d["pubblicataIl"], "cat": d["categoria"], "titolo": d["titolo"],
