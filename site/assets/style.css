@@ -203,3 +203,8 @@ footer{background:var(--navy-deep);color:rgba(255,255,255,.6);padding:4.5rem 0 2
 .pp-photo-wrap figcaption{margin-top:1.6rem}
 .pp-photo-wrap .pp-cap-name{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--navy)}
 .pp-photo-wrap .pp-cap-role{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:.3rem;font-weight:700}
+
+/* contatto personale sotto la foto del socio */
+.pp-mail{display:inline-flex;align-items:center;gap:.55rem;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(184,151,62,.35);width:100%;font-size:.92rem;color:var(--navy);text-decoration:none;word-break:break-all;transition:color .3s}
+.pp-mail svg{width:17px;height:17px;flex:none;fill:none;stroke:var(--gold);stroke-width:1.6}
+.pp-mail:hover{color:var(--gold)}
