@@ -20,7 +20,7 @@ Riferimenti fissi:
    e imposta `git config user.name "TAX360 Redazione"` e `git config user.email "redazione@tax360.it"`.
 2. `pip install markdown --break-system-packages -q` e verifica le regole: `cd tool && python -m pytest -q` (devono passare tutte; se no, registra errore e non pubblicare nulla).
 3. Dalla scrivania leggi: `config/impostazioni`, tutta la collezione `fonti`, le `bozze`, le `notizie` (ultimi 120 giorni, `query.order_by dataVerifica desc`, limit 500).
-   Salva le fonti in `fonti.json` (array di {id, nome, dominio, categoria, attiva}) e le notizie in `storico.json`.
+   Salva in `tool/` le fonti come `fonti.json` (array di {id, nome, dominio, categoria, attiva}) e le notizie in `storico.json`.
 4. Crea il documento `scansioni/<id>` con `{avvio, esito: "in_corso", manuale}`.
 
 ## 2. Coda di pubblicazione (prima di tutto)
@@ -32,7 +32,8 @@ Riferimenti fissi:
 - **Non pubblicare mai a mano**: solo tramite il comando `publish`, che applica il controllo bloccante.
 
 ## 3. Salvataggio sul sito
-Se `site/` è cambiato: `git add site && git commit -m "News: <titoli>" && git push`.
+Se `site/` è cambiato, dalla cartella principale dell'archivio (i comandi `python -m tax360news` girano invece da `tool/`):
+`git add site && git commit -m "News: <titoli>" && git push`. Prima del push esegui `git pull --rebase` per includere eventuali modifiche arrivate nel frattempo.
 Se il push fallisce, riporta le bozze appena pubblicate a `stato: "approvato"` (verranno ritentate) e annota l'errore nella scansione.
 
 ## 4. Finestra di ricerca
