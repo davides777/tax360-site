@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prenota una consulenza — TAX360 Professional Advisory</title>
+<meta name="description" content="Prenota una consulenza con TAX360: compila il form e ti ricontatteremo per un primo confronto.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+
+<!-- ===== SLIDE-OUT MENU ===== -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<aside class="menu-panel" id="menuPanel" aria-hidden="true">
+  <div class="menu-panel-top">
+    <img src="assets/logo-dark.png" alt="TAX360 — Professional Advisory">
+    <button class="menu-close" id="menuClose" aria-label="Chiudi menu">&times;</button>
+  </div>
+  <ul class="menu-nav">
+    <li><a href="index.html" data-close><span class="idx">00</span> Home</a></li>
+    <li><a href="chisiamo.html" data-close><span class="idx">01</span> Chi siamo</a></li>
+    <li><a href="servizi.html" data-close><span class="idx">02</span> Servizi</a></li>
+    <li><a href="news.html" data-close><span class="idx">03</span> News Fiscali</a></li>
+    <li><a href="scadenziario.html" data-close><span class="idx">04</span> Scadenziario</a></li>
+    <li><a href="contatti.html" data-close><span class="idx">05</span> Contatti</a></li>
+    <li><a href="prenota.html" class="active" data-close><span class="idx">06</span> Prenota Consulenza</a></li>
+  </ul>
+  <div class="menu-panel-foot">
+    <div class="mp-label">Contatti</div>
+    <a href="tel:+390965885627">0965 885627</a><br>
+    <a href="tel:3409981212">340 998 1212</a> &middot; <a href="tel:3293679707">329 367 9707</a><br>
+    <a href="mailto:studio@tax360.it">studio@tax360.it</a><br>
+    www.tax360.it
+  </div>
+</aside>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="solid">
+  <div class="nav-wrap">
+    <div class="nav-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Apri menu"><span></span><span></span><span></span></button>
+      <a href="index.html" class="logo"><img src="assets/logo-light.png" alt="TAX360 — Professional Advisory" id="logoImg"></a>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="chisiamo.html">Chi siamo</a></li>
+        <li><a href="servizi.html">Servizi</a></li>
+        <li><a href="news.html">News Fiscali</a></li>
+        <li><a href="scadenziario.html">Scadenziario</a></li>
+        <li><a href="prenota.html" class="nav-cta">Prenota Consulenza</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-glow"></div>
+  <div class="page-hero-orbits"><svg viewBox="0 0 100 100" fill="none">
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="46" ry="18" stroke="#b8973e" stroke-width=".5" transform="rotate(25 50 50)"/>
+  <ellipse class="orbit-spin-rev" cx="50" cy="50" rx="46" ry="18" stroke="#fff" stroke-width=".4" transform="rotate(-20 50 50)"/>
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="38" ry="44" stroke="#b8973e" stroke-width=".4" transform="rotate(70 50 50)"/>
+</svg></div>
+  <div class="container">
+    <span class="eyebrow">Prenota Consulenza</span>
+    <h1>Prenota una <span class="em">consulenza</span></h1>
+    <p class="lead">Raccontaci di cosa hai bisogno: ti ricontatteremo per fissare un primo confronto con i professionisti di TAX360.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span>Prenota Consulenza</div>
+  </div>
+</section>
+
+<style>
+.form-wrap{background:#fff;border:1px solid rgba(30,58,95,.1);border-radius:4px;padding:3rem;box-shadow:0 20px 50px rgba(30,58,95,.07)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+.field{display:flex;flex-direction:column;gap:.5rem}
+.field.full{grid-column:1 / -1}
+.field label{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--navy)}
+.field label .req{color:var(--gold)}
+.field input,.field textarea{font-family:var(--sans);font-size:1rem;color:var(--ink);background:var(--paper);
+  border:1px solid rgba(30,58,95,.15);border-radius:3px;padding:.85rem 1rem;transition:border-color .3s,box-shadow .3s;width:100%}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,151,62,.12)}
+.field textarea{resize:vertical;min-height:130px}
+.field .err{font-size:.78rem;color:#b3261e;display:none}
+.field.invalid input,.field.invalid textarea{border-color:#b3261e}
+.field.invalid .err{display:block}
+.form-actions{margin-top:1.8rem;display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap}
+.form-note{font-size:.8rem;color:#6b7480;font-weight:300;max-width:42ch}
+.form-submit{position:relative}
+.form-submit[disabled]{opacity:.6;cursor:not-allowed}
+.form-msg{margin-top:1.6rem;padding:1.1rem 1.3rem;border-radius:3px;font-size:.95rem;display:none}
+.form-msg.ok{display:block;background:rgba(40,120,70,.08);border:1px solid rgba(40,120,70,.3);color:#1f6b42}
+.form-msg.fail{display:block;background:rgba(179,38,30,.07);border:1px solid rgba(179,38,30,.3);color:#9a261e}
+.form-success{display:none;text-align:center;padding:1rem}
+.form-success .tick{width:64px;height:64px;border-radius:50%;background:rgba(184,151,62,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 1.4rem}
+.form-success .tick svg{width:30px;height:30px}
+.form-success h3{font-family:var(--serif);font-size:1.9rem;color:var(--navy);font-weight:600;margin-bottom:.6rem}
+.form-success p{font-weight:300;color:#42505f;max-width:46ch;margin:0 auto}
+.config-banner{grid-column:1/-1;background:rgba(184,151,62,.08);border:1px dashed rgba(184,151,62,.5);border-radius:3px;padding:1rem 1.2rem;font-size:.85rem;color:#7a6320;line-height:1.6}
+.config-banner b{color:var(--navy)}
+.aside-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;border-radius:4px;padding:2.6rem;position:relative;overflow:hidden}
+.aside-card .ac-orbit{position:absolute;right:-20%;top:-10%;width:70%;opacity:.25}
+.aside-card h3{font-family:var(--serif);font-size:1.7rem;font-weight:600;margin-bottom:1.2rem;position:relative}
+.aside-card ul{list-style:none;display:flex;flex-direction:column;gap:1rem;position:relative}
+.aside-card li{display:flex;gap:.8rem;font-weight:300;color:rgba(255,255,255,.85);font-size:.96rem}
+.aside-card li .n{color:var(--gold-light);font-family:var(--serif);font-weight:600}
+.aside-contact{margin-top:2rem;padding-top:1.6rem;border-top:1px solid rgba(255,255,255,.15);position:relative;font-size:.9rem;font-weight:300;color:rgba(255,255,255,.75);line-height:1.9}
+.aside-contact a{color:var(--gold-light);text-decoration:none}
+.prenota-layout{display:grid;grid-template-columns:1.5fr 1fr;gap:3rem;align-items:start}
+@media(max-width:900px){.prenota-layout{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-wrap{padding:2rem}}
+</style>
+
+<section style="background:var(--paper)">
+  <div class="container">
+    <div class="prenota-layout">
+      <div class="reveal-on-scroll">
+        <div class="form-wrap">
+          <!-- SUCCESS STATE -->
+          <div class="form-success" id="formSuccess">
+            <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#b8973e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+            <h3>Richiesta inviata</h3>
+            <p>Grazie. Abbiamo ricevuto la tua richiesta e ti ricontatteremo al pi&ugrave; presto ai recapiti indicati.</p>
+          </div>
+          <!-- FORM -->
+          <form id="prenotaForm" action="https://formspree.io/f/xvzngqkz" method="POST" novalidate>
+            <div class="form-grid">
+              <div class="config-banner" id="configBanner">
+                <b>Da configurare:</b> sostituisci <code>REPLACE_WITH_YOUR_ID</code> nell'attributo <code>action</code> del form con il tuo endpoint Formspree (es. <code>https://formspree.io/f/abcdwxyz</code>). Finch&eacute; non lo fai, il form mostra una simulazione di invio. Rimuovi questo riquadro quando &egrave; pronto.
+              </div>
+              <div class="field">
+                <label for="nome">Nome e cognome <span class="req">*</span></label>
+                <input type="text" id="nome" name="nome" required autocomplete="name">
+                <span class="err">Inserisci il tuo nome.</span>
+              </div>
+              <div class="field">
+                <label for="email">Email <span class="req">*</span></label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+                <span class="err">Inserisci un'email valida.</span>
+              </div>
+              <div class="field">
+                <label for="telefono">Telefono</label>
+                <input type="tel" id="telefono" name="telefono" autocomplete="tel">
+                <span class="err">Numero non valido.</span>
+              </div>
+              <div class="field">
+                <label for="servizio">Servizio di interesse</label>
+                <input type="text" id="servizio" name="servizio" placeholder="Es. pianificazione fiscale, M&amp;A...">
+                <span class="err"></span>
+              </div>
+              <div class="field full">
+                <label for="messaggio">Messaggio <span class="req">*</span></label>
+                <textarea id="messaggio" name="messaggio" required placeholder="Descrivi brevemente la tua esigenza..."></textarea>
+                <span class="err">Scrivi un breve messaggio.</span>
+              </div>
+              <!-- honeypot anti-spam -->
+              <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-gold form-submit" id="submitBtn">Invia richiesta <span class="arr">&rarr;</span></button>
+              <span class="form-note">Trattiamo i tuoi dati nel rispetto della normativa privacy, solo per rispondere alla richiesta.</span>
+            </div>
+            <div class="form-msg" id="formMsg"></div>
+          </form>
+        </div>
+      </div>
+
+      <aside class="reveal-on-scroll">
+        <div class="aside-card">
+          <div class="ac-orbit"><svg viewBox="0 0 100 100" fill="none">
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="46" ry="18" stroke="#b8973e" stroke-width=".5" transform="rotate(25 50 50)"/>
+  <ellipse class="orbit-spin-rev" cx="50" cy="50" rx="46" ry="18" stroke="#fff" stroke-width=".4" transform="rotate(-20 50 50)"/>
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="38" ry="44" stroke="#b8973e" stroke-width=".4" transform="rotate(70 50 50)"/>
+</svg></div>
+          <h3>Come funziona</h3>
+          <ul>
+            <li><span class="n">1.</span> Compili il form con le tue esigenze</li>
+            <li><span class="n">2.</span> Ti ricontattiamo per un primo confronto</li>
+            <li><span class="n">3.</span> Definiamo insieme il percorso pi&ugrave; adatto</li>
+          </ul>
+          <div class="aside-contact">
+            Preferisci contattarci direttamente?<br>
+            <a href="tel:+390965885627">0965 885627</a><br>
+            <a href="tel:3409981212">340 998 1212</a> &middot; <a href="tel:3293679707">329 367 9707</a><br>
+            <a href="mailto:studio@tax360.it">studio@tax360.it</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  const form=document.getElementById('prenotaForm');
+  const btn=document.getElementById('submitBtn');
+  const msg=document.getElementById('formMsg');
+  const success=document.getElementById('formSuccess');
+  const action=form.getAttribute('action');
+  const configured = !action.includes('REPLACE_WITH_YOUR_ID');
+  const banner=document.getElementById('configBanner');
+  if(configured && banner) banner.style.display='none';
+
+  function setInvalid(field, on){field.classList.toggle('invalid', on);}
+  function validate(){
+    let ok=true;
+    const checks=[
+      ['nome', v=>v.trim().length>0],
+      ['email', v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())],
+      ['messaggio', v=>v.trim().length>0],
+    ];
+    checks.forEach(([id,fn])=>{
+      const input=document.getElementById(id);
+      const field=input.closest('.field');
+      const valid=fn(input.value);
+      setInvalid(field, !valid);
+      if(!valid) ok=false;
+    });
+    return ok;
+  }
+  // live-clear errors
+  ['nome','email','messaggio'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',e=>{
+      if(e.target.value.trim()) e.target.closest('.field').classList.remove('invalid');
+    });
+  });
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    msg.className='form-msg'; msg.textContent='';
+    if(!validate()) return;
+    btn.disabled=true; const orig=btn.innerHTML; btn.innerHTML='Invio in corso...';
+
+    // If not configured yet: simulate a successful submission for preview
+    if(!configured){
+      setTimeout(()=>{ form.style.display='none'; success.style.display='block'; success.scrollIntoView({behavior:'smooth',block:'center'}); }, 900);
+      return;
+    }
+    try{
+      const data=new FormData(form);
+      const res=await fetch(action,{method:'POST',body:data,headers:{'Accept':'application/json'}});
+      if(res.ok){
+        form.style.display='none'; success.style.display='block';
+        success.scrollIntoView({behavior:'smooth',block:'center'});
+      }else{
+        const j=await res.json().catch(()=>({}));
+        msg.classList.add('fail');
+        msg.textContent=(j.errors&&j.errors.map(x=>x.message).join(', '))||'Si è verificato un errore. Riprova o contattaci via email.';
+        btn.disabled=false; btn.innerHTML=orig;
+      }
+    }catch(err){
+      msg.classList.add('fail');
+      msg.textContent='Connessione non riuscita. Controlla la rete o scrivici a studio@tax360.it';
+      btn.disabled=false; btn.innerHTML=orig;
+    }
+  });
+})();
+</script>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-col foot-about">
+        <a href="index.html" class="logo logo--foot"><img src="assets/logo-dark.png" alt="TAX360 — Professional Advisory"></a>
+        <p>Consulenza tributaria, societaria e strategica per imprese e gruppi. Una visione integrata al servizio della crescita.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Studio</h5>
+        <ul>
+          <li><a href="chisiamo.html">Chi siamo</a></li>
+          <li><a href="servizi.html">Servizi</a></li>
+          <li><a href="news.html">News fiscali</a></li>
+          <li><a href="scadenziario.html">Scadenziario</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contatti</h5>
+        <ul>
+          <li><a href="tel:+390965885627">0965 885627</a></li>
+          <li><a href="tel:3409981212">340 998 1212</a></li>
+          <li><a href="tel:3293679707">329 367 9707</a></li>
+          <li><a href="mailto:studio@tax360.it">studio@tax360.it</a></li>
+          <li><a href="contatti.html#sede">Via Crocefisso 34, Reggio Calabria</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Dati</h5>
+        <ul>
+          <li>P.IVA / C.F. 03356200802</li>
+          <li>Cod. univoco G9HZJRW</li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>&copy; 2026 TAX360 — Professional Advisory. Tutti i diritti riservati.</p>
+      <p>www.tax360.it</p>
+    </div>
+  </div>
+</footer>
+<script src="assets/main.js"></script>
+</body>
+</html>

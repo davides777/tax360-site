@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Fiscali — TAX360 Professional Advisory</title>
+<meta name="description" content="News e approfondimenti fiscali in linguaggio chiaro, a cura di TAX360 Professional Advisory.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+
+<!-- ===== SLIDE-OUT MENU ===== -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<aside class="menu-panel" id="menuPanel" aria-hidden="true">
+  <div class="menu-panel-top">
+    <img src="assets/logo-dark.png" alt="TAX360 — Professional Advisory">
+    <button class="menu-close" id="menuClose" aria-label="Chiudi menu">&times;</button>
+  </div>
+  <ul class="menu-nav">
+    <li><a href="index.html" data-close><span class="idx">00</span> Home</a></li>
+    <li><a href="chisiamo.html" data-close><span class="idx">01</span> Chi siamo</a></li>
+    <li><a href="servizi.html" data-close><span class="idx">02</span> Servizi</a></li>
+    <li><a href="news.html" class="active" data-close><span class="idx">03</span> News Fiscali</a></li>
+    <li><a href="scadenziario.html" data-close><span class="idx">04</span> Scadenziario</a></li>
+    <li><a href="contatti.html" data-close><span class="idx">05</span> Contatti</a></li>
+    <li><a href="prenota.html" data-close><span class="idx">06</span> Prenota Consulenza</a></li>
+  </ul>
+  <div class="menu-panel-foot">
+    <div class="mp-label">Contatti</div>
+    <a href="tel:+390965885627">0965 885627</a><br>
+    <a href="tel:3409981212">340 998 1212</a> &middot; <a href="tel:3293679707">329 367 9707</a><br>
+    <a href="mailto:studio@tax360.it">studio@tax360.it</a><br>
+    www.tax360.it
+  </div>
+</aside>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="solid">
+  <div class="nav-wrap">
+    <div class="nav-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Apri menu"><span></span><span></span><span></span></button>
+      <a href="index.html" class="logo"><img src="assets/logo-light.png" alt="TAX360 — Professional Advisory" id="logoImg"></a>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="chisiamo.html">Chi siamo</a></li>
+        <li><a href="servizi.html">Servizi</a></li>
+        <li><a href="news.html" class="active">News Fiscali</a></li>
+        <li><a href="scadenziario.html">Scadenziario</a></li>
+        <li><a href="prenota.html" class="nav-cta">Prenota Consulenza</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-glow"></div>
+  <div class="page-hero-orbits"><svg viewBox="0 0 100 100" fill="none">
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="46" ry="18" stroke="#b8973e" stroke-width=".5" transform="rotate(25 50 50)"/>
+  <ellipse class="orbit-spin-rev" cx="50" cy="50" rx="46" ry="18" stroke="#fff" stroke-width=".4" transform="rotate(-20 50 50)"/>
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="38" ry="44" stroke="#b8973e" stroke-width=".4" transform="rotate(70 50 50)"/>
+</svg></div>
+  <div class="container">
+    <span class="eyebrow">News Fiscali</span>
+    <h1>Aggiornamenti e <span class="em">approfondimenti</span></h1>
+    <p class="lead">Notizie e approfondimenti fiscali in linguaggio chiaro, a cura dello studio TAX360. Per restare sempre informato sulle novità che riguardano la tua attività.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span>News Fiscali</div>
+  </div>
+</section>
+
+<section style="background:var(--paper)">
+  <div class="container">
+    <!-- filtri categoria -->
+    <div class="reveal-on-scroll news-filters" id="newsFilters"></div>
+
+    <!-- griglia news -->
+    <div class="reveal-on-scroll news-grid" id="newsGrid"></div>
+
+    <!-- stato vuoto -->
+    <div class="reveal-on-scroll" id="newsEmpty" style="display:none">
+      <div style="background:#fff;border:1px dashed rgba(184,151,62,.5);border-radius:4px;padding:3.5rem 2.5rem;text-align:center;max-width:680px;margin:0 auto">
+        <div style="width:56px;height:56px;margin:0 auto 1.4rem;color:var(--gold)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></div>
+        <div style="font-family:var(--serif);font-size:1.7rem;color:var(--navy);font-weight:600;margin-bottom:.8rem">Nessuna news al momento</div>
+        <p style="font-weight:300;color:#42505f;font-size:1.05rem;max-width:46ch;margin:0 auto">Stiamo preparando i primi aggiornamenti. Torna a trovarci presto, oppure contattaci per una consulenza diretta.</p>
+        <div style="margin-top:2rem"><a href="prenota.html" class="btn btn-navy">Prenota una consulenza</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.news-filters{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:3rem}
+.news-filter{font-family:var(--sans);font-size:.82rem;font-weight:600;letter-spacing:.02em;color:var(--navy);
+  background:#fff;border:1px solid rgba(30,58,95,.15);border-radius:2px;padding:.6rem 1.2rem;cursor:pointer;transition:all .25s}
+.news-filter:hover{border-color:var(--gold);color:var(--gold)}
+.news-filter.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem}
+.news-card{background:#fff;padding:2rem;border-radius:4px;border:1px solid rgba(30,58,95,.08);
+  display:flex;flex-direction:column;gap:1rem;transition:transform .4s,box-shadow .4s,border-color .4s;min-height:230px}
+.news-card:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(30,58,95,.12);border-color:rgba(184,151,62,.35)}
+.news-card .nc-top{display:flex;align-items:center;justify-content:space-between;gap:.8rem}
+.news-tag{align-self:flex-start;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  padding:.32rem .7rem;border-radius:2px}
+.news-card .nc-date{font-size:.76rem;color:var(--silver);letter-spacing:.03em;white-space:nowrap}
+.news-card h3{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--navy);line-height:1.3}
+.news-card p{font-size:.95rem;font-weight:300;color:#42505f;line-height:1.65;flex:1}
+.news-card .nc-src{font-size:.78rem;color:#8791a0;font-weight:400}
+.news-card .nc-src a{color:var(--gold);text-decoration:none}
+.news-card .nc-src a:hover{text-decoration:underline}
+.news-card .nc-more{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin-top:auto;transition:color .3s}
+a.news-card:hover .nc-more{color:var(--gold)}
+@media(max-width:1024px){.news-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.news-grid{grid-template-columns:1fr}}
+</style>
+
+<script src="assets/news.js"></script>
+<script>
+(function(){
+  const CAT_COLORS={
+    "Normativa":"#1e3a5f","Agevolazioni":"#3a7d5f","Scadenze":"#b8973e","Approfondimenti":"#7a4ea3"
+  };
+  const grid=document.getElementById('newsGrid');
+  const empty=document.getElementById('newsEmpty');
+  const filtersEl=document.getElementById('newsFilters');
+  const MESI=["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+  let filter="Tutte";
+
+  function fmtDate(s){
+    const p=s.split('-'); if(p.length!==3) return s;
+    return parseInt(p[2],10)+" "+MESI[parseInt(p[1],10)-1]+" "+p[0];
+  }
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function tagStyle(cat){
+    const c=CAT_COLORS[cat]||"#9a9a9a";
+    return 'color:'+c+';background:'+c+'1a';
+  }
+
+  // build filters (only if there are news)
+  const cats=["Tutte"].concat(Object.keys(CAT_COLORS));
+  if(NEWS.length>0){
+    cats.forEach(c=>{
+      const b=document.createElement('button');b.className='news-filter'+(c==="Tutte"?' active':'');
+      b.textContent=c;b.dataset.cat=c;
+      b.addEventListener('click',()=>{filter=c;document.querySelectorAll('.news-filter').forEach(x=>x.classList.toggle('active',x.dataset.cat===c));render();});
+      filtersEl.appendChild(b);
+    });
+  }
+
+  function render(){
+    const sorted=[...NEWS].sort((a,b)=>(a.data<b.data?1:-1));
+    const items=sorted.filter(n=>filter==="Tutte"||n.cat===filter);
+    if(NEWS.length===0){empty.style.display='block';grid.style.display='none';filtersEl.style.display='none';return;}
+    grid.innerHTML='';
+    items.forEach(n=>{
+      const card=document.createElement(n.url?'a':'article');card.className='news-card';
+      if(n.url){card.href=n.url;card.style.textDecoration='none';}
+      card.innerHTML='<div class="nc-top"><span class="news-tag" style="'+tagStyle(n.cat)+'">'+esc(n.cat)+'</span>'
+        +'<span class="nc-date">'+fmtDate(n.data)+'</span></div>'
+        +'<h3>'+esc(n.titolo)+'</h3><p>'+esc(n.sintesi)+'</p>'
+        +(n.fonte?'<div class="nc-src">Fonte: '+esc(n.fonte)+'</div>':'')
+        +(n.url?'<span class="nc-more">Leggi l&rsquo;articolo &rarr;</span>':'');
+      grid.appendChild(card);
+    });
+  }
+  render();
+})();
+</script>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-col foot-about">
+        <a href="index.html" class="logo logo--foot"><img src="assets/logo-dark.png" alt="TAX360 — Professional Advisory"></a>
+        <p>Consulenza tributaria, societaria e strategica per imprese e gruppi. Una visione integrata al servizio della crescita.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Studio</h5>
+        <ul>
+          <li><a href="chisiamo.html">Chi siamo</a></li>
+          <li><a href="servizi.html">Servizi</a></li>
+          <li><a href="news.html">News fiscali</a></li>
+          <li><a href="scadenziario.html">Scadenziario</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contatti</h5>
+        <ul>
+          <li><a href="tel:+390965885627">0965 885627</a></li>
+          <li><a href="tel:3409981212">340 998 1212</a></li>
+          <li><a href="tel:3293679707">329 367 9707</a></li>
+          <li><a href="mailto:studio@tax360.it">studio@tax360.it</a></li>
+          <li><a href="contatti.html#sede">Via Crocefisso 34, Reggio Calabria</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Dati</h5>
+        <ul>
+          <li>P.IVA / C.F. 03356200802</li>
+          <li>Cod. univoco G9HZJRW</li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>&copy; 2026 TAX360 — Professional Advisory. Tutti i diritti riservati.</p>
+      <p>www.tax360.it</p>
+    </div>
+  </div>
+</footer>
+<script src="assets/main.js"></script>
+</body>
+</html>

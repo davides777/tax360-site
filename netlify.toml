@@ -1,0 +1,4 @@
+# Netlify pubblica SOLO la cartella site/ (strumenti e scrivania restano privati nell'archivio)
+[build]
+  publish = "site"
+  command = ""

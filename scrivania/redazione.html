@@ -1,0 +1,689 @@
+<title>Redazione TAX360</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+/* Layout: sticky masthead + tab rail; each tab is a working surface (lists left, detail right on wide screens). */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --surface-2:#eef1f6; --ink:#15233a; --muted:#5a6679; --line:#dbe1ea;
+  --navy:#1e3a5f; --navy-ink:#ffffff; --gold:#9c7a2b; --gold-soft:rgba(184,151,62,.14);
+  --ok:#2c7a53; --ok-soft:rgba(44,122,83,.12); --warn:#a96d12; --warn-soft:rgba(201,138,30,.14);
+  --bad:#b23b2a; --bad-soft:rgba(178,59,42,.11); --info:#355d8f; --info-soft:rgba(53,93,143,.12);
+  --display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+  --ui:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1622; --surface:#152132; --surface-2:#1b2a3f; --ink:#e6ecf4; --muted:#9aa8bb; --line:#27364d;
+  --navy:#2b4f7d; --navy-ink:#ffffff; --gold:#d6b466; --gold-soft:rgba(214,180,102,.14);
+  --ok:#5cc28f; --ok-soft:rgba(92,194,143,.14); --warn:#e3a94a; --warn-soft:rgba(227,169,74,.15);
+  --bad:#ec806c; --bad-soft:rgba(236,128,108,.14); --info:#8fb3e6; --info-soft:rgba(143,179,230,.14); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1622; --surface:#152132; --surface-2:#1b2a3f; --ink:#e6ecf4; --muted:#9aa8bb; --line:#27364d;
+  --navy:#2b4f7d; --navy-ink:#ffffff; --gold:#d6b466; --gold-soft:rgba(214,180,102,.14);
+  --ok:#5cc28f; --ok-soft:rgba(92,194,143,.14); --warn:#e3a94a; --warn-soft:rgba(227,169,74,.15);
+  --bad:#ec806c; --bad-soft:rgba(236,128,108,.14); --info:#8fb3e6; --info-soft:rgba(143,179,230,.14); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:400 14px/1.55 var(--ui);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--navy)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* masthead */
+.mast{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--navy);color:var(--navy-ink)}
+.mast .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:12px}
+.brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+.brand b{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:.01em}
+.brand b span{color:#d6b466}
+.brand small{font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:.75}
+.scanstate{display:flex;align-items:center;gap:8px;font-size:12.5px;opacity:.95}
+.mast .chip{background:rgba(255,255,255,.12);color:#fff}.mast .chip.ok{color:#9be6bf}.mast .chip.warn{color:#f5cd7a}.mast .chip.bad{color:#ffab99}
+.tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.12)}
+.tabs .wrap{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tab{background:none;border:0;color:rgba(255,255,255,.72);padding:11px 14px;font-weight:600;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab:hover{color:#fff}
+.tab[aria-selected="true"]{color:#fff;border-bottom-color:#d6b466}
+.tab .n{font-family:var(--mono);font-size:11px;margin-left:6px;padding:1px 6px;border-radius:9px;background:rgba(255,255,255,.14)}
+.tab .n.alert{background:#d6b466;color:#15233a}
+
+/* buttons, chips */
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px;border-radius:var(--r);font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--gold)}
+.btn.primary{background:var(--gold);border-color:var(--gold);color:#15233a}
+.btn.primary:hover{filter:brightness(1.06)}
+.btn.onnavy{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.28);color:#fff}
+.btn.onnavy:hover{border-color:#d6b466}
+.btn.danger{color:var(--bad);border-color:var(--bad-soft)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)} .chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)} .chip.info{background:var(--info-soft);color:var(--info)}
+.chip.gold{background:var(--gold-soft);color:var(--gold)} .chip.mute{background:var(--surface-2);color:var(--muted)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:currentColor}
+
+main{padding-block:22px 60px}
+.panel{display:none}.panel.on{display:block}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.head h1{font-family:var(--display);font-size:32px;font-weight:600;line-height:1.1}
+.head p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.empty{padding:34px 24px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px}
+.label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.mono{font-family:var(--mono);font-size:12.5px}
+.muted{color:var(--muted)}
+a{color:var(--info)}
+.note{font-size:12.5px;color:var(--muted)}
+.banner{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:var(--r);margin-bottom:14px;font-size:13px}
+.banner.warn{background:var(--warn-soft);color:var(--ink)} .banner.bad{background:var(--bad-soft)} .banner.info{background:var(--info-soft)}
+
+/* briefing */
+.coverage{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;padding:14px 16px;margin-bottom:18px;align-items:center}
+.covbar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;display:flex}
+.covbar i{display:block;height:100%}
+.daypick{display:flex;gap:8px;align-items:center}
+.daypick select{padding:6px 8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.news{display:grid;gap:12px}
+.item{padding:16px 18px;display:grid;gap:10px;border-left:3px solid var(--line)}
+.item.imp5,.item.imp4{border-left-color:var(--gold)}
+.item h3{font-size:17px;font-weight:700;line-height:1.35}
+.item .meta{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:12.5px;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.facts div{min-width:0}
+.facts dt{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.facts dd{margin:0}
+.srcs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;font-size:13px}
+.srcs ul{margin:4px 0 0;padding-left:18px}
+.srcs li{word-break:break-word}
+.propose{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--surface-2);border-radius:var(--r);padding:10px 12px}
+.propose .t{font-weight:600}
+.sec-title{display:flex;align-items:center;gap:10px;margin:26px 0 10px;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* articoli */
+.split{display:grid;grid-template-columns:330px minmax(0,1fr);gap:16px;align-items:start}
+.list{max-height:calc(100vh - 190px);overflow:auto}
+.li{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:12px 14px;cursor:pointer}
+.li:hover{background:var(--surface-2)}
+.li[aria-current="true"]{background:var(--gold-soft)}
+.li .tt{font-weight:700;font-size:13.5px;margin:4px 0 2px;line-height:1.35}
+.li .sub{font-size:12px;color:var(--muted)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.fbtn{border:1px solid var(--line);background:var(--surface);padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer}
+.fbtn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.editor{padding:18px 20px}
+.editor .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:14px}
+.editor .bar .acts{display:flex;gap:8px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.f{display:grid;gap:4px;min-width:0;align-content:start}
+.f label{font-size:12px;font-weight:700;color:var(--muted)}
+.f input,.f select,.f textarea{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:8px 10px}
+.f textarea{resize:vertical;min-height:70px}
+.f .cnt{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right}
+.f .cnt.over{color:var(--bad)}
+.corpo textarea{min-height:340px;font-family:var(--mono);font-size:13px;line-height:1.6}
+.preview{border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;max-height:520px;overflow:auto;font-size:14.5px;line-height:1.75}
+.preview h2{font-family:var(--display);font-size:24px;margin:18px 0 6px}.preview h3{font-size:16px;margin:14px 0 4px}
+.preview table{border-collapse:collapse;width:100%}.preview td,.preview th{border-bottom:1px solid var(--line);padding:5px;text-align:left}
+.gate{border-radius:var(--r);padding:10px 14px;margin-bottom:14px;font-size:13px}
+.gate.okk{background:var(--ok-soft)} .gate.blk{background:var(--bad-soft)}
+.gate ul{margin:6px 0 0;padding-left:18px}
+details.box{border:1px solid var(--line);border-radius:var(--r);margin-top:12px}
+details.box>summary{cursor:pointer;padding:10px 14px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.box>summary::-webkit-details-marker{display:none}
+details.box>div{padding:0 14px 14px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl select{min-width:116px}
+.tbl input,.tbl select{width:100%;border:1px solid var(--line);background:var(--surface);border-radius:4px;padding:4px 6px;font-size:12.5px}
+.scroll{overflow-x:auto}
+.confirm{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--warn-soft);padding:10px 12px;border-radius:var(--r);margin-bottom:12px}
+
+/* tables for notizie / storico / fonti */
+.rows{width:100%;border-collapse:collapse}
+.rows th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.rows td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.rows tr:last-child td{border-bottom:0}
+.search{padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);min-width:min(320px,100%)}
+.switch{position:relative;width:38px;height:22px;border-radius:11px;border:0;background:var(--line);cursor:pointer;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+.switch[aria-checked="true"]{background:var(--ok)}
+.switch[aria-checked="true"]::after{left:19px}
+.addform{display:grid;grid-template-columns:2fr 2fr 1.2fr 2fr auto;gap:8px;padding:14px;align-items:end}
+.settings{display:grid;gap:14px;max-width:760px}
+.settings .card{padding:16px 18px;display:grid;gap:10px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tagx{display:inline-flex;gap:6px;align-items:center;background:var(--surface-2);border-radius:999px;padding:4px 6px 4px 10px;font-size:12.5px}
+.tagx button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:14px;line-height:1}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:var(--r);font-weight:600;font-size:13px;z-index:20;max-width:calc(100% - 32px)}
+@media (max-width:900px){
+  .split{grid-template-columns:1fr}.list{max-height:none}
+  .facts,.srcs,.grid2,.grid3{grid-template-columns:1fr}
+  .addform{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <div class="brand"><b>TAX<span>360</span></b><small>Redazione News Fiscali</small></div>
+    <div class="scanstate" id="scanState"><span class="chip mute">In caricamento</span></div>
+    <button class="btn onnavy" id="runNow" type="button" title="Avvia ora una scansione completa delle fonti">Avvia scansione ora</button>
+  </div>
+  <nav class="tabs" aria-label="Sezioni"><div class="wrap" role="tablist" id="tabs"></div></nav>
+</header>
+
+<main class="wrap">
+  <div id="globalMsg"></div>
+
+  <!-- BRIEFING -->
+  <section class="panel" id="p-briefing" role="tabpanel">
+    <div class="head">
+      <div><h1>Briefing del mattino</h1><p>Le novità della scansione, ordinate per impatto pratico. Le segnalazioni senza riscontro ufficiale sono separate in fondo.</p></div>
+      <div class="daypick"><label for="daySel" class="note">Giorno</label><select id="daySel"></select></div>
+    </div>
+    <div id="briefingBody"></div>
+  </section>
+
+  <!-- ARTICOLI -->
+  <section class="panel" id="p-articoli" role="tabpanel">
+    <div class="head"><div><h1>Articoli</h1><p>Le bozze verificate vanno online da sole. Quelle con dati da verificare restano qui finché non le approvi.</p></div></div>
+    <div class="split">
+      <div>
+        <div class="filters" id="artFilters"></div>
+        <div class="card list" id="artList"></div>
+      </div>
+      <div class="card" id="artEditor"></div>
+    </div>
+  </section>
+
+  <!-- NOTIZIE -->
+  <section class="panel" id="p-notizie" role="tabpanel">
+    <div class="head">
+      <div><h1>Archivio notizie</h1><p>Ogni notizia elaborata, con gli sviluppi successivi. Serve anche a evitare doppioni tra una scansione e l'altra.</p></div>
+      <input class="search" id="newsSearch" type="search" placeholder="Cerca per titolo, ente, identificativo">
+    </div>
+    <div class="card scroll" id="newsTable"></div>
+  </section>
+
+  <!-- STORICO -->
+  <section class="panel" id="p-storico" role="tabpanel">
+    <div class="head"><div><h1>Storico scansioni</h1><p>Esito di ogni scansione, copertura delle fonti e controlli rimasti in sospeso.</p></div></div>
+    <div class="card scroll" id="scanTable"></div>
+  </section>
+
+  <!-- FONTI -->
+  <section class="panel" id="p-fonti" role="tabpanel">
+    <div class="head"><div><h1>Fonti approvate</h1><p>La scansione cerca e cita solo questi domini. Le fonti ufficiali servono a verificare; quelle specialistiche a scoprire e approfondire, sempre con attribuzione.</p></div></div>
+    <div id="fontiBody"></div>
+  </section>
+
+  <!-- IMPOSTAZIONI -->
+  <section class="panel" id="p-impostazioni" role="tabpanel">
+    <div class="head"><div><h1>Impostazioni</h1><p>Orario, limiti e argomenti seguiti dalla scansione.</p></div></div>
+    <div class="settings" id="setBody"></div>
+  </section>
+</main>
+
+<script>
+(function(){
+"use strict";
+/* ---------------- constants ---------------- */
+const TABS=[["briefing","Briefing"],["articoli","Articoli"],["notizie","Notizie"],["storico","Storico"],["fonti","Fonti"],["impostazioni","Impostazioni"]];
+const CATEGORIE=["Normativa","Agevolazioni","Scadenze","Approfondimenti"];
+const STATI_ATTO={proposta:"Proposta",pubblicato:"Pubblicato",in_vigore:"In vigore",in_attesa_attuazione:"In attesa di attuazione",prassi:"Prassi",giurisprudenza:"Giurisprudenza"};
+const STATI_BOZZA={da_verificare:["Da verificare","bad"],in_revisione:["In revisione","warn"],approvato:["Approvato, in coda","info"],pubblicato:["Pubblicato","ok"],da_ritirare:["Da ritirare","warn"],ritirato:["Ritirato","mute"]};
+const MESI=["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+const SERVER="Claude Code Remote";
+const DEF_CONFIG={orario:"08:00",limiteBozze:1,finestraRecuperoGiorni:3,pubblicazioneAutomatica:true,argomenti:[],triggerId:null,sitoUrl:"https://tax360.it"};
+
+/* ---------------- state ---------------- */
+const S={db:null,user:null,mcp:null,dl:null,canWrite:true,config:null,configVer:null,fonti:[],scansioni:[],briefing:[],notizie:[],bozze:[],
+  tab:"briefing",day:null,artFilter:"aperti",artSel:null,dirty:null,preview:false,confirm:null,newsQ:"",loaded:{},err:null};
+
+/* ---------------- helpers ---------------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function dIt(s){if(!s)return"—";const m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${+m[3]} ${MESI[+m[2]-1]} ${m[1]}`:esc(s);}
+function dtIt(s){if(!s)return"—";const d=new Date(s);if(isNaN(d))return esc(s);return d.toLocaleString("it-IT",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit",timeZone:"Europe/Rome"});}
+function host(u){try{const h=new URL(u).hostname.toLowerCase();return h.startsWith("www.")?h.slice(4):h;}catch(e){return null}}
+function sourceFor(u){const h=host(u);if(!h)return null;let best=null;for(const f of S.fonti){if(f.attiva===false)continue;const d=String(f.dominio||"").toLowerCase().replace(/^www\./,"");if(h===d||h.endsWith("."+d)){if(!best||d.length>best.dominio.length)best=f;}}return best;}
+let toastT=null;function toast(m){let t=$(".toast");if(!t){t=document.createElement("div");t.className="toast";t.setAttribute("role","status");document.body.appendChild(t);}t.textContent=m;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},3200);}
+function chip(txt,kind){return `<span class="chip ${kind||"mute"}">${esc(txt)}</span>`;}
+function link(u,t){return u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t||host(u)||u)}</a>`:esc(t||"");}
+
+/* ---------------- gate (mirror of tool/tax360news/gate.py) ---------------- */
+function gate(d){
+  const r=[];const corpo=d.corpo||"";
+  for(const k of ["titolo","titoloSeo","slug","metaDescription","sintesi","corpo","categoria","statoAtto"]) if(!String(d[k]||"").trim()) r.push("Manca: "+k);
+  if(d.slug&&(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(d.slug)||d.slug.length>80)) r.push("Slug non valido (minuscole, numeri e trattini)");
+  if((d.titoloSeo||"").length>65) r.push("Titolo SEO oltre 65 caratteri");
+  const md=d.metaDescription||""; if(md&&(md.length<50||md.length>160)) r.push("Meta description fuori da 50–160 caratteri");
+  const date=d.date||{};
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date.pubblicazione||"")) r.push("Data del documento mancante");
+  for(const k of ["entrataInVigore","decorrenza"]) if(!(k in date)) r.push(`Indica '${k}' o dichiaralo non applicabile`);
+  if(["pubblicato","in_vigore","in_attesa_attuazione"].includes(d.statoAtto)&&!date.entrataInVigore&&!date.decorrenza&&!d.dateNote) r.push("Atto senza entrata in vigore o decorrenza e senza nota");
+  if(d.statoAtto==="proposta"){
+    const first=(corpo.split(/\n\s*\n/).find(b=>b.trim()&&!b.trim().startsWith("#"))||"");
+    const head=((d.titolo||"")+" "+first).toLowerCase();
+    if(!["proposta","disegno di legge","ddl","bozza","schema di decreto","in discussione","emendament","in esame","non ancora approvat"].some(w=>head.includes(w))) r.push("Misura in proposta: titolo o apertura devono dirlo");
+    if(/\b(è|sono) (entrat[aoei] )?in vigore\b|\bsi applica dal\b/i.test(corpo)) r.push("Misura in proposta descritta come in vigore");
+  }
+  const uff=(d.fontiUfficiali||[]).filter(f=>f.aperta&&(sourceFor(f.url)||{}).categoria==="ufficiale");
+  if(!uff.length) r.push("Nessun documento ufficiale consultato");
+  for(const s of d.fontiSpecialistiche||[]){
+    const src=sourceFor(s.url); if(!src||src.categoria!=="specialistica") r.push("Fonte specialistica non approvata: "+(s.url||""));
+    if(!s.testata) r.push("Approfondimento senza testata");
+    else if(!corpo.toLowerCase().includes(String(s.testata).toLowerCase())) r.push(`Interpretazione di ${s.testata} non attribuita nel testo`);
+  }
+  for(const m of corpo.matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)) if(!sourceFor(m[1])) r.push("Link verso sito non approvato: "+m[1]);
+  const ctl=((d.scheda||{}).controlli||[]).filter(c=>c.essenziale);
+  if(!ctl.length) r.push("Nessun dato essenziale nella scheda di verifica");
+  for(const c of ctl){ if(c.esito!=="verificato") r.push("Dato essenziale da verificare: "+(c.dato||"?")); else if((sourceFor(c.fonte)||{}).categoria!=="ufficiale") r.push("Dato verificato senza fonte ufficiale: "+(c.dato||"?")); }
+  for(const x of (d.scheda||{}).dubbi||[]) if(x.bloccante) r.push("Dubbio bloccante: "+(x.testo||""));
+  return r;
+}
+
+/* ---------------- data wiring ---------------- */
+function sub(name,ref,cb){
+  S.loaded[name]=false;
+  const t=setTimeout(()=>{if(!S.loaded[name]){S.err="Il database non risponde ancora: i dati potrebbero non essere aggiornati.";renderMsg();}},10000);
+  return ref.onSnapshot(snap=>{S.loaded[name]=true;if(!snap.metadata||!snap.metadata.fromCache)clearTimeout(t);cb(snap);render();},
+    e=>{clearTimeout(t);S.loaded[name]=true;S.err="Errore nel caricare i dati ("+(e&&e.code||"sconosciuto")+").";render();});
+}
+const docs=snap=>snap.docs.filter(d=>d.exists).map(d=>Object.assign({id:d.id},d.data()));
+
+async function boot(){
+  buildTabs();
+  let db=null;
+  try{db=await window.claude.use("db");}catch(e){db=null}
+  if(!db){S.err="Apri questa pagina da claude.ai per vedere i dati della redazione.";render();return;}
+  S.db=db;
+  sub("config",db.doc("config/impostazioni"),s=>{S.config=s.exists?Object.assign({},DEF_CONFIG,s.data()):null;});
+  sub("fonti",db.collection("fonti"),s=>{S.fonti=docs(s).sort((a,b)=>(a.categoria+a.nome).localeCompare(b.categoria+b.nome));});
+  sub("scansioni",db.collection("scansioni").orderBy("avvio","desc").limit(60),s=>{S.scansioni=docs(s);});
+  sub("briefing",db.collection("briefing").orderBy("data","desc").limit(60),s=>{S.briefing=docs(s);});
+  sub("notizie",db.collection("notizie").orderBy("dataVerifica","desc").limit(500),s=>{S.notizie=docs(s);});
+  sub("bozze",db.collection("bozze"),s=>{S.bozze=docs(s).sort((a,b)=>String(b.aggiornata||b.creata||"").localeCompare(String(a.aggiornata||a.creata||"")));});
+  try{
+    const u=await window.claude.use("user");S.user=u;
+    if(u){const w=await u.can("data.write");S.canWrite=(w!==false);}
+  }catch(e){}
+  try{S.mcp=await window.claude.use("mcp");}catch(e){}
+  try{S.dl=await window.claude.use("downloads");}catch(e){}
+  render();
+}
+
+/* ---------------- rendering ---------------- */
+function buildTabs(){
+  const box=$("#tabs");
+  box.innerHTML=TABS.map(([k,l])=>`<button class="tab" role="tab" id="t-${k}" aria-controls="p-${k}" data-tab="${k}">${l}<span class="n" id="n-${k}" hidden></span></button>`).join("");
+  box.addEventListener("click",e=>{const b=e.target.closest(".tab");if(b)go(b.dataset.tab);});
+  const h=(location.hash||"").slice(1); go(TABS.some(t=>t[0]===h)?h:"briefing",true);
+  window.addEventListener("hashchange",()=>{const k=location.hash.slice(1);if(TABS.some(t=>t[0]===k))go(k,true);});
+}
+function go(k,fromHash){S.tab=k;if(!fromHash){try{history.replaceState(null,"","#"+k)}catch(e){location.hash=k}}
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===k)));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id==="p-"+k));render();}
+
+function renderMsg(){
+  const m=[];
+  if(S.err) m.push(`<div class="banner warn">${esc(S.err)}</div>`);
+  if(S.db&&S.loaded.config&&!S.config) m.push(`<div class="banner info">La redazione non è ancora configurata. La prima scansione creerà impostazioni, fonti e briefing.</div>`);
+  if(S.db&&!S.canWrite) m.push(`<div class="banner info">Hai accesso in sola lettura: puoi consultare briefing e articoli, ma non modificarli.</div>`);
+  $("#globalMsg").innerHTML=m.join("");
+}
+function render(){
+  renderMsg(); renderScanState(); renderCounts();
+  if(S.tab==="briefing")renderBriefing();
+  if(S.tab==="articoli")renderArticoli();
+  if(S.tab==="notizie")renderNotizie();
+  if(S.tab==="storico")renderStorico();
+  if(S.tab==="fonti")renderFonti();
+  if(S.tab==="impostazioni")renderSettings();
+}
+function renderCounts(){
+  const open=S.bozze.filter(b=>["da_verificare","in_revisione"].includes(b.stato)).length;
+  const n=$("#n-articoli");if(n){n.hidden=!open;n.textContent=open;n.classList.toggle("alert",open>0);}
+}
+function covChip(esito){return esito==="completa"?chip("Copertura completa","ok"):esito==="parziale"?chip("Copertura parziale","warn"):esito==="errore"||esito==="assente"?chip("Scansione non riuscita","bad"):chip("In corso","info");}
+function renderScanState(){
+  const el=$("#scanState");const s=S.scansioni[0];
+  if(!S.db){el.innerHTML=chip("Non collegata","mute");return;}
+  if(!s){el.innerHTML=`<span style="opacity:.8">Nessuna scansione ancora</span>`;return;}
+  const cov=s.copertura||{};
+  el.innerHTML=`${covChip(s.esito==="in_corso"?"in_corso":(cov.esito||s.esito))}<span style="opacity:.85">Ultima: ${dtIt(s.fine||s.avvio)}</span>`;
+}
+
+/* BRIEFING */
+function renderBriefing(){
+  const sel=$("#daySel");const days=S.briefing.map(b=>b.id);
+  if(!S.day||!days.includes(S.day))S.day=days[0]||null;
+  sel.innerHTML=days.length?days.map(d=>`<option value="${esc(d)}"${d===S.day?" selected":""}>${dIt(d)}</option>`).join(""):`<option>Nessun briefing</option>`;
+  sel.disabled=!days.length;
+  const box=$("#briefingBody");
+  if(!S.db){box.innerHTML=emptyBox("Nessun dato","Apri la pagina da claude.ai.");return;}
+  const b=S.briefing.find(x=>x.id===S.day);
+  if(!b){box.innerHTML=emptyBox("Il primo briefing arriverà con la prima scansione",`La scansione parte ogni mattina alle ${esc((S.config||DEF_CONFIG).orario)}, oppure subito con «Avvia scansione ora».`);return;}
+  const byId=Object.fromEntries(S.notizie.map(n=>[n.id,n]));
+  const ver=(b.notizie||[]).map(id=>byId[id]).filter(Boolean);
+  const seg=(b.segnalazioni||[]).map(id=>byId[id]).filter(Boolean);
+  const cov=b.copertura||{};const tot=(cov.raggiunte||[]).length+(cov.indisponibili||[]).length+(cov.nonInterrogate||[]).length;
+  const okp=tot?Math.round(100*(cov.raggiunte||[]).length/tot):0;
+  let h=`<div class="card coverage">
+    <div>${covChip(cov.esito||"completa")}</div>
+    <div class="covbar" aria-label="Fonti raggiunte ${okp}%"><i style="width:${okp}%;background:var(--ok)"></i><i style="width:${100-okp}%;background:var(--warn-soft)"></i></div>
+    <div class="note">Fonti</div><div class="note">${(cov.raggiunte||[]).length} raggiunte su ${tot}${b.scansioneId?` · scansione ${esc(dtIt((S.scansioni.find(s=>s.id===b.scansioneId)||{}).avvio))}`:""}</div>`;
+  if((cov.indisponibili||[]).length||(cov.nonInterrogate||[]).length){
+    h+=`<div class="note">Non raggiunte</div><div class="note">${(cov.indisponibili||[]).map(x=>`<b>${esc(x.nome||x.dominio)}</b> (${esc(x.motivo||"non raggiungibile")})`).join(" · ")}${(cov.nonInterrogate||[]).length?` · non interrogate: ${esc((cov.nonInterrogate||[]).join(", "))}`:""}</div>`;
+  }
+  h+=`</div>`;
+  if(b.sintesi) h+=`<p style="max-width:80ch;margin:0 0 16px">${esc(b.sintesi)}</p>`;
+  if(b.nessunaNovita&&!seg.length){h+=emptyBox("Nessuna novità rilevante","La scansione è stata completata senza sviluppi che cambino una decisione o un adempimento. Nessun articolo prodotto.");}
+  if(ver.length){h+=`<div class="sec-title">Notizie verificate · ${ver.length}</div><div class="news">${ver.map(n=>newsCard(n,false)).join("")}</div>`;}
+  else if(!b.nessunaNovita){h+=`<div class="sec-title">Notizie verificate</div><p class="note">Nessuna notizia con riscontro ufficiale in questa scansione.</p>`;}
+  if(seg.length){h+=`<div class="sec-title">Segnalazioni da verificare · ${seg.length}</div><div class="news">${seg.map(n=>newsCard(n,true)).join("")}</div>`;}
+  if((b.controlliSospesi||[]).length) h+=`<div class="sec-title">Controlli in sospeso</div><ul>${b.controlliSospesi.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+  box.innerHTML=h;
+}
+function newsCard(n,daVer){
+  const art=S.bozze.find(x=>x.notiziaId===n.id);
+  const imp=Math.max(0,Math.min(5,+n.impatto||0));
+  const tags=[chip(STATI_ATTO[n.statoAtto]||n.statoAtto||"—","info")];
+  if(n.classificazione==="sviluppo")tags.push(chip("Sviluppo","gold"));
+  if(daVer)tags.push(chip("Da verificare","warn"));
+  const uff=(n.fontiUfficiali||[]),spe=(n.fontiSpecialistiche||[]);
+  let h=`<article class="card item imp${imp}">
+    <div class="meta">${tags.join("")}<span>${esc(n.ente||"")}</span>${n.identificativo?`<span class="mono">${esc(n.identificativo)}</span>`:""}<span>Impatto ${"●".repeat(imp)}${"○".repeat(5-imp)}</span></div>
+    <h3>${esc(n.titolo)}</h3>
+    <div class="facts">
+      <div><dt>Che cosa è successo</dt><dd>${esc(n.cheCosa||"—")}</dd></div>
+      <div><dt>Chi è interessato</dt><dd>${esc(n.chi||"—")}</dd></div>
+      <div><dt>Da quando</dt><dd>${esc(n.daQuando||"—")}${dateLine(n)}</dd></div>
+    </div>`;
+  if((n.cambiamenti||[]).length) h+=`<div class="note"><b>Cosa è cambiato rispetto alla segnalazione precedente:</b> ${esc(n.cambiamenti.join("; "))}</div>`;
+  h+=`<div class="srcs"><div><div class="label">Fonti ufficiali</div>${uff.length?`<ul>${uff.map(f=>`<li>${link(f.url,f.titolo)}${f.aperta?"":` <span class="chip warn">non consultata</span>`}</li>`).join("")}</ul>`:`<p class="note">Nessuna</p>`}</div>
+    <div><div class="label">Approfondimenti</div>${spe.length?`<ul>${spe.map(s=>`<li>${link(s.url,s.titolo)} — ${esc(s.testata||"")}${s.autore?", "+esc(s.autore):""}</li>`).join("")}</ul>`:`<p class="note">Nessuno</p>`}</div></div>`;
+  if(daVer) h+=`<div class="banner warn" style="margin:0"><b>Da reperire:</b>&nbsp;${esc(n.documentoDaReperire||"documento ufficiale")}</div>`;
+  if(art){ const st=STATI_BOZZA[art.stato]||[art.stato,"mute"];
+    h+=`<div class="propose"><div><span class="note">Articolo</span><div class="t">${esc(art.titolo)}</div></div><div>${chip(st[0],st[1])} <button class="btn" data-open-art="${esc(art.id)}">Apri</button></div></div>`;
+  } else if(n.meritaArticolo||n.richiestaBozza){
+    h+=`<div class="propose"><div><span class="note">${n.richiestaBozza?"Bozza richiesta: arriverà con la prossima scansione":"Merita un articolo"}</span><div class="t">${esc(n.titoloProvvisorio||n.titolo)}</div>${n.motivo?`<div class="note">${esc(n.motivo)}</div>`:""}</div>
+      ${n.richiestaBozza?"":`<button class="btn" data-req="${esc(n.id)}" ${S.canWrite?"":"disabled"}>Richiedi bozza</button>`}</div>`;
+  } else if(!daVer){
+    h+=`<div style="display:flex;justify-content:flex-end"><button class="btn" data-req="${esc(n.id)}" ${S.canWrite?"":"disabled"}>Richiedi comunque una bozza</button></div>`;
+  }
+  return h+`</article>`;
+}
+function dateLine(n){const d=n.date||{};const p=[];if(d.pubblicazione)p.push("pubbl. "+dIt(d.pubblicazione));if(d.entrataInVigore)p.push("in vigore "+dIt(d.entrataInVigore));if(d.decorrenza)p.push("decorrenza "+dIt(d.decorrenza));for(const s of d.scadenze||[])p.push("scad. "+dIt(s.data));return p.length?`<div class="note mono" style="margin-top:4px">${esc(p.join(" · "))}</div>`:"";}
+function emptyBox(t,s){return `<div class="card empty"><b>${t}</b>${s}</div>`;}
+
+/* ARTICOLI */
+const ART_FILTERS=[["aperti","Da gestire",b=>["da_verificare","in_revisione"].includes(b.stato)],["approvato","In coda",b=>b.stato==="approvato"],["pubblicato","Pubblicati",b=>b.stato==="pubblicato"],["tutti","Tutti",()=>true]];
+function renderArticoli(){
+  const f=$("#artFilters");
+  f.innerHTML=ART_FILTERS.map(([k,l,fn])=>`<button class="fbtn" data-af="${k}" aria-pressed="${S.artFilter===k}">${l} <span class="mono">${S.bozze.filter(fn).length}</span></button>`).join("");
+  const fn=(ART_FILTERS.find(x=>x[0]===S.artFilter)||ART_FILTERS[3])[2];
+  const items=S.bozze.filter(fn);
+  const list=$("#artList");
+  if(!S.db){list.innerHTML=emptyBox("Nessun dato","Apri la pagina da claude.ai.");}
+  else if(!items.length){list.innerHTML=`<div class="empty"><b>${S.bozze.length?"Nessun articolo in questo stato":"Ancora nessun articolo"}</b>${S.bozze.length?"Cambia filtro per vedere gli altri.":"La scansione prepara al massimo una bozza al giorno, solo quando una novità merita un articolo."}</div>`;}
+  else list.innerHTML=items.map(b=>{const st=STATI_BOZZA[b.stato]||[b.stato,"mute"];return `<button class="li" data-art="${esc(b.id)}" aria-current="${S.artSel===b.id}">
+      <div style="display:flex;justify-content:space-between;gap:8px">${chip(st[0],st[1])}<span class="note mono">${dIt((b.aggiornata||b.creata||"").slice(0,10))}</span></div>
+      <div class="tt">${esc(b.titolo||"(senza titolo)")}</div><div class="sub">${esc(b.categoria||"")}${b.stato==="pubblicato"&&b.url?" · online":""}</div></button>`;}).join("");
+  if(S.artSel&&!S.bozze.some(b=>b.id===S.artSel)){S.artSel=null;S.dirty=null;}
+  if(!S.artSel&&items[0]&&window.matchMedia("(min-width:901px)").matches)S.artSel=items[0].id;
+  renderEditor();
+}
+function cur(){const b=S.bozze.find(x=>x.id===S.artSel);if(!b)return null;if(!S.dirty||S.dirty.id!==b.id)S.dirty=JSON.parse(JSON.stringify(b));return S.dirty;}
+function renderEditor(){
+  const box=$("#artEditor");const d=cur();
+  if(!d){box.innerHTML=`<div class="empty"><b>Seleziona un articolo</b>Qui puoi rivedere testo, date e verifiche, poi approvarlo o ritirarlo dal sito.</div>`;return;}
+  const orig=S.bozze.find(x=>x.id===d.id);const changed=JSON.stringify(orig)!==JSON.stringify(d);
+  const ro=!S.canWrite;const motivi=gate(d);const st=STATI_BOZZA[d.stato]||[d.stato,"mute"];
+  const date=d.date||(d.date={});const scheda=d.scheda||(d.scheda={controlli:[],dubbi:[]});
+  const conf=S.confirm&&S.confirm.id===d.id?S.confirm:null;
+  let h=`<div class="editor">`;
+  if(conf) h+=`<div class="confirm"><b>${esc(conf.msg)}</b><button class="btn danger" data-act="${conf.act}-ok">Conferma</button><button class="btn" data-act="cancel">Annulla</button></div>`;
+  h+=`<div class="bar"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">${chip(st[0],st[1])}${d.url?`<a href="${esc(d.url)}" target="_blank" rel="noopener" class="note">Vedi sul sito ↗</a>`:""}${changed?chip("Modifiche non salvate","warn"):""}</div>
+    <div class="acts">
+      <button class="btn" data-act="save" ${ro||!changed?"disabled":""}>Salva</button>
+      ${["da_verificare"].includes(d.stato)?`<button class="btn" data-act="review" ${ro?"disabled":""}>Metti in revisione</button>`:""}
+      ${["da_verificare","in_revisione","pubblicato"].includes(d.stato)?`<button class="btn primary" data-act="approve" ${ro||motivi.length?"disabled":""} title="${motivi.length?"Risolvi prima i punti bloccanti":"Pubblica alla prossima scansione"}">${d.stato==="pubblicato"?"Ripubblica corretto":"Approva per la pubblicazione"}</button>`:""}
+      ${d.stato==="approvato"?`<button class="btn primary" data-act="publishnow" ${ro?"disabled":""}>Pubblica ora</button>`:""}
+      ${d.stato==="pubblicato"?`<button class="btn danger" data-act="withdraw" ${ro?"disabled":""}>Ritira dal sito</button>`:""}
+      <button class="btn" data-act="exmd">Esporta .md</button><button class="btn" data-act="exhtml">Esporta .html</button>
+    </div></div>`;
+  h+=motivi.length?`<div class="gate blk"><b>Non pubblicabile: ${motivi.length} punt${motivi.length>1?"i":"o"} da risolvere</b><ul>${motivi.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>`
+                  :`<div class="gate okk"><b>Tutti i dati essenziali risultano verificati su fonte ufficiale.</b> ${d.stato==="pubblicato"?"Articolo online.":"Pronto per la pubblicazione."}</div>`;
+  const dis=ro?"disabled":"";
+  h+=`<div class="grid2">
+    ${fld("titolo","Titolo editoriale",d.titolo,dis,0)}
+    ${fld("titoloSeo","Titolo SEO",d.titoloSeo,dis,65)}
+  </div><div class="grid3" style="margin-top:12px">
+    ${fld("slug","Slug (indirizzo)",d.slug,dis,80)}
+    <div class="f"><label for="e-categoria">Categoria</label><select id="e-categoria" data-k="categoria" ${dis}>${CATEGORIE.map(c=>`<option${c===d.categoria?" selected":""}>${c}</option>`).join("")}</select></div>
+    <div class="f"><label for="e-statoAtto">Stato dell'atto</label><select id="e-statoAtto" data-k="statoAtto" ${dis}>${Object.entries(STATI_ATTO).map(([k,v])=>`<option value="${k}"${k===d.statoAtto?" selected":""}>${v}</option>`).join("")}</select></div>
+  </div>
+  <div class="f" style="margin-top:12px"><label for="e-metaDescription">Meta description</label><textarea id="e-metaDescription" data-k="metaDescription" rows="2" ${dis}>${esc(d.metaDescription||"")}</textarea>${cnt(d.metaDescription,160,50)}</div>
+  <div class="f" style="margin-top:12px"><label for="e-sintesi">Sintesi (scheda nella pagina News)</label><textarea id="e-sintesi" data-k="sintesi" rows="2" ${dis}>${esc(d.sintesi||"")}</textarea></div>
+  <div class="grid3" style="margin-top:12px">
+    ${dfld("pubblicazione","Data del documento",date.pubblicazione,dis)}
+    ${dfld("entrataInVigore","Entrata in vigore",date.entrataInVigore,dis)}
+    ${dfld("decorrenza","Decorrenza",date.decorrenza,dis)}
+  </div>
+  <div class="f" style="margin-top:12px"><label for="e-dateNote">Nota sulle date (es. decorrenza in attesa del decreto attuativo)</label><input id="e-dateNote" data-k="dateNote" value="${esc(d.dateNote||"")}" ${dis}></div>
+  <div class="f corpo" style="margin-top:12px"><label for="e-corpo" style="display:flex;justify-content:space-between">Testo dell'articolo (Markdown)<button class="btn" data-act="pv" type="button" style="padding:2px 8px">${S.preview?"Modifica":"Anteprima"}</button></label>
+    ${S.preview?`<div class="preview" id="pv">${mdHtml(d.corpo)}</div>`:`<textarea id="e-corpo" data-k="corpo" ${dis}>${esc(d.corpo||"")}</textarea>`}</div>`;
+  // scheda interna
+  const ctl=scheda.controlli||(scheda.controlli=[]);
+  h+=`<details class="box" open><summary>Scheda interna di revisione<span class="note">non pubblicata</span></summary><div>
+    <div class="label" style="margin:6px 0">Dati verificati</div>
+    <div class="scroll"><table class="tbl"><thead><tr><th>Dato</th><th>Valore</th><th>Riferimento</th><th>Fonte (URL)</th><th>Essenziale</th><th>Esito</th></tr></thead><tbody>
+    ${ctl.map((c,i)=>`<tr>
+      <td><input aria-label="Dato" id="c-${i}-dato" data-c="${i}" data-ck="dato" value="${esc(c.dato||"")}" ${dis}></td>
+      <td><input aria-label="Valore" id="c-${i}-valore" data-c="${i}" data-ck="valore" value="${esc(c.valore||"")}" ${dis}></td>
+      <td><input aria-label="Riferimento" id="c-${i}-riferimento" data-c="${i}" data-ck="riferimento" value="${esc(c.riferimento||"")}" ${dis}></td>
+      <td><input aria-label="Fonte" id="c-${i}-fonte" data-c="${i}" data-ck="fonte" value="${esc(c.fonte||"")}" ${dis}></td>
+      <td><select aria-label="Essenziale" id="c-${i}-essenziale" data-c="${i}" data-ck="essenziale" ${dis}><option value="1"${c.essenziale?" selected":""}>Sì</option><option value="0"${c.essenziale?"":" selected"}>No</option></select></td>
+      <td><select aria-label="Esito" id="c-${i}-esito" data-c="${i}" data-ck="esito" ${dis}><option value="verificato"${c.esito==="verificato"?" selected":""}>Verificato</option><option value="da_verificare"${c.esito!=="verificato"?" selected":""}>Da verificare</option></select></td></tr>`).join("")}
+    </tbody></table></div>
+    ${ro?"":`<button class="btn" data-act="addctl" style="margin-top:8px">Aggiungi dato</button>`}
+    ${(scheda.dubbi||[]).length?`<div class="label" style="margin:14px 0 6px">Dubbi residui</div><ul>${scheda.dubbi.map((x,i)=>`<li>${esc(x.testo)} ${x.bloccante?`<span class="chip bad">bloccante</span>${ro?"":` <button class="btn" data-unblock="${i}" style="padding:1px 8px">Risolto</button>`}`:""}</li>`).join("")}</ul>`:""}
+    ${(scheda.puntiRevisore||[]).length?`<div class="label" style="margin:14px 0 6px">Punti per il revisore</div><ul>${scheda.puntiRevisore.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
+    ${(scheda.fontiConsultate||[]).length?`<div class="label" style="margin:14px 0 6px">Fonti consultate</div><ul>${scheda.fontiConsultate.map(x=>`<li>${link(x.url||x,x.titolo)}${x.esito?` <span class="note">(${esc(x.esito)})</span>`:""}</li>`).join("")}</ul>`:""}
+  </div></details>`;
+  // fonti dell'articolo
+  h+=`<details class="box"><summary>Fonti citate nell'articolo<span class="note">${(d.fontiUfficiali||[]).length} ufficiali · ${(d.fontiSpecialistiche||[]).length} specialistiche</span></summary><div>
+    <div class="label" style="margin:6px 0">Ufficiali</div><ul>${(d.fontiUfficiali||[]).map((f,i)=>`<li>${link(f.url,f.titolo)} ${f.aperta?chip("consultata","ok"):chip("non consultata","warn")}${ro||f.aperta?"":` <button class="btn" data-opened="${i}" style="padding:1px 8px">L'ho consultata io</button>`}</li>`).join("")||"<li class='note'>Nessuna</li>"}</ul>
+    <div class="label" style="margin:10px 0 6px">Specialistiche</div><ul>${(d.fontiSpecialistiche||[]).map(s=>`<li>${link(s.url,s.titolo)} — ${esc(s.testata||"")}</li>`).join("")||"<li class='note'>Nessuna</li>"}</ul>
+  </div></details>`;
+  if(d.storia&&d.storia.length) h+=`<details class="box"><summary>Cronologia<span class="note">${d.storia.length} eventi</span></summary><div><ul>${d.storia.slice().reverse().map(x=>`<li><span class="mono">${dtIt(x.quando)}</span> — ${esc(x.cosa)}</li>`).join("")}</ul></div></details>`;
+  box.innerHTML=h+`</div>`;
+}
+function fld(k,l,v,dis,max){return `<div class="f"><label for="e-${k}">${l}</label><input id="e-${k}" data-k="${k}" value="${esc(v||"")}" ${dis}>${max?cnt(v,max):""}</div>`;}
+function dfld(k,l,v,dis){return `<div class="f"><label for="e-d-${k}">${l}</label><input id="e-d-${k}" type="date" data-dk="${k}" value="${esc(v||"")}" ${dis}><span class="note">${v?"":"Vuoto = non applicabile"}</span></div>`;}
+function cnt(v,max,min){const n=(v||"").length;return `<div class="cnt${n>max||(min&&n&&n<min)?" over":""}">${n}/${max}</div>`;}
+function mdHtml(md){const safe=String(md||"").replace(/</g,"&lt;");let out=window.marked?window.marked.parse(safe):`<pre>${esc(md)}</pre>`;return out.replace(/href="(?!https?:\/\/)[^"]*"/g,'href="#"').replace(/<a href="http/g,'<a target="_blank" rel="noopener" href="http');}
+
+/* NOTIZIE */
+function renderNotizie(){
+  const q=S.newsQ.trim().toLowerCase();
+  const items=S.notizie.filter(n=>!q||[n.titolo,n.ente,n.identificativo,n.cheCosa].join(" ").toLowerCase().includes(q));
+  const box=$("#newsTable");
+  if(!S.db){box.innerHTML=emptyBox("Nessun dato","Apri la pagina da claude.ai.");return;}
+  if(!items.length){box.innerHTML=`<div class="empty"><b>${S.notizie.length?"Nessun risultato":"L'archivio è vuoto"}</b>${S.notizie.length?"Prova con un altro termine.":"Le notizie compariranno qui dopo la prima scansione."}</div>`;return;}
+  box.innerHTML=`<table class="rows"><thead><tr><th>Notizia</th><th>Stato</th><th>Date</th><th>Verifica</th><th></th></tr></thead><tbody>${items.map(n=>{
+    const v=n.verificata?chip("Verificata","ok"):chip("Da verificare","warn");
+    const art=S.bozze.find(b=>b.notiziaId===n.id);
+    return `<tr><td style="min-width:260px"><b>${esc(n.titolo)}</b><div class="note">${esc(n.ente||"")}${n.identificativo?` · <span class="mono">${esc(n.identificativo)}</span>`:""}</div>
+      ${(n.aggiornamenti||[]).length?`<div class="note" style="margin-top:4px">Sviluppi: ${n.aggiornamenti.map(a=>`${dIt(a.data)} — ${esc(a.cosaCambia)}`).join("; ")}</div>`:""}</td>
+      <td>${chip(STATI_ATTO[n.statoAtto]||n.statoAtto||"—","info")}</td>
+      <td class="note mono" style="white-space:nowrap">${dateLine(n).replace(/<[^>]+>/g,"")||"—"}</td>
+      <td>${v}<div class="note">${dIt(n.dataVerifica)}</div></td>
+      <td>${art?`<button class="btn" data-open-art="${esc(art.id)}">Articolo</button>`:(n.richiestaBozza?chip("Bozza richiesta","gold"):`<button class="btn" data-req="${esc(n.id)}" ${S.canWrite?"":"disabled"}>Richiedi bozza</button>`)}</td></tr>`;}).join("")}</tbody></table>`;
+}
+
+/* STORICO */
+function renderStorico(){
+  const box=$("#scanTable");
+  if(!S.db){box.innerHTML=emptyBox("Nessun dato","Apri la pagina da claude.ai.");return;}
+  if(!S.scansioni.length){box.innerHTML=`<div class="empty"><b>Nessuna scansione registrata</b>Ogni scansione, automatica o manuale, comparirà qui con la copertura delle fonti.</div>`;return;}
+  box.innerHTML=`<table class="rows"><thead><tr><th>Avvio</th><th>Tipo</th><th>Esito</th><th>Notizie</th><th>Articolo</th><th>Fonti non raggiunte</th></tr></thead><tbody>${S.scansioni.map(s=>{
+    const c=s.copertura||{};const art=s.bozzaId?S.bozze.find(b=>b.id===s.bozzaId):null;
+    return `<tr><td class="mono" style="white-space:nowrap">${dtIt(s.avvio)}</td><td>${s.manuale?"Manuale":"Automatica"}</td>
+      <td>${s.esito==="errore"?chip("Errore","bad"):covChip(c.esito||s.esito)}${s.nota?`<div class="note">${esc(s.nota)}</div>`:""}</td>
+      <td class="mono">${s.notizieVerificate||0} verificate<br>${s.segnalazioni||0} da verificare<br>${s.doppioni||0} doppioni</td>
+      <td>${art?`<button class="btn" data-open-art="${esc(art.id)}">${esc((STATI_BOZZA[art.stato]||[art.stato])[0])}</button>`:'<span class="note">Nessuno</span>'}</td>
+      <td class="note" style="min-width:200px">${(c.indisponibili||[]).map(x=>esc(x.nome||x.dominio)+(x.motivo?` (${esc(x.motivo)})`:"")).join("<br>")||"—"}</td></tr>`;}).join("")}</tbody></table>`;
+}
+
+/* FONTI */
+function renderFonti(){
+  const box=$("#fontiBody");
+  if(!S.db){box.innerHTML=emptyBox("Nessun dato","Apri la pagina da claude.ai.");return;}
+  const last=S.scansioni.find(s=>s.copertura)||{};const ind=Object.fromEntries(((last.copertura||{}).indisponibili||[]).map(x=>[x.dominio,x.motivo]));
+  const raggiunte=new Set(((last.copertura||{}).raggiunte)||[]);
+  const block=(cat,titolo)=>{const fs=S.fonti.filter(f=>f.categoria===cat);
+    return `<div class="sec-title">${titolo} · ${fs.filter(f=>f.attiva!==false).length} attive</div><div class="card scroll"><table class="rows"><thead><tr><th>Attiva</th><th>Fonte</th><th>Dominio</th><th>Ultima scansione</th><th></th></tr></thead><tbody>${
+      fs.map(f=>`<tr><td><button class="switch" role="switch" aria-label="Attiva ${esc(f.nome)}" aria-checked="${f.attiva!==false}" data-toggle="${esc(f.id)}" ${S.canWrite?"":"disabled"}></button></td>
+        <td><b>${esc(f.nome)}</b><div class="note">${esc(f.note||"")}</div></td><td class="mono">${esc(f.dominio)}</td>
+        <td>${ind[f.dominio]?`${chip("Non raggiunta","warn")}<div class="note">${esc(ind[f.dominio])}</div>`:raggiunte.has(f.dominio)?chip("Raggiunta","ok"):'<span class="note">—</span>'}</td>
+        <td>${S.canWrite?(S.confirm&&S.confirm.act==="delfonte"&&S.confirm.id===f.id?`<button class="btn danger" data-act="delfonte-ok">Elimina</button> <button class="btn" data-act="cancel">Annulla</button>`:`<button class="btn" data-delfonte="${esc(f.id)}">Rimuovi</button>`):""}</td></tr>`).join("")||`<tr><td colspan="5" class="note">Nessuna fonte in questa categoria.</td></tr>`}</tbody></table></div>`;};
+  box.innerHTML=(S.fonti.length?"":`<div class="banner info">L'elenco delle fonti verrà caricato con la prima configurazione.</div>`)
+    +block("ufficiale","Fonti ufficiali")+block("specialistica","Fonti specialistiche")
+    +(S.canWrite?`<div class="sec-title">Aggiungi una fonte</div><form class="card addform" id="addFonte">
+      <div class="f"><label for="nf-nome">Nome</label><input id="nf-nome" required placeholder="Es. Il Fisco"></div>
+      <div class="f"><label for="nf-dominio">Dominio</label><input id="nf-dominio" required placeholder="es. esempio.it"></div>
+      <div class="f"><label for="nf-cat">Categoria</label><select id="nf-cat"><option value="specialistica">Specialistica</option><option value="ufficiale">Ufficiale</option></select></div>
+      <div class="f"><label for="nf-note">Note</label><input id="nf-note" placeholder="Perché è autorevole"></div>
+      <button class="btn primary" type="submit">Aggiungi</button></form>`:"");
+}
+
+/* IMPOSTAZIONI */
+function renderSettings(){
+  const box=$("#setBody");
+  if(!S.db){box.innerHTML=emptyBox("Nessun dato","Apri la pagina da claude.ai.");return;}
+  const c=S.config||DEF_CONFIG;const dis=S.canWrite&&S.config?"":"disabled";
+  box.innerHTML=`
+  <div class="card"><div class="label">Orario della scansione</div>
+    <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><div class="f"><label for="s-orario">Ogni giorno alle (ora italiana)</label><input id="s-orario" type="time" value="${esc(c.orario)}" ${dis}></div>
+    <button class="btn" data-act="saveorario" ${dis}>Salva orario</button></div>
+    <p class="note" style="margin:0">${c.triggerId?"L'attività programmata viene aggiornata subito.":"L'attività programmata non è ancora collegata: l'orario verrà applicato quando lo sarà."}</p></div>
+  <div class="card"><div class="label">Pubblicazione</div>
+    <div style="display:flex;gap:12px;align-items:center"><button class="switch" role="switch" aria-label="Pubblicazione automatica" aria-checked="${c.pubblicazioneAutomatica!==false}" data-act="autopub" ${dis}></button>
+    <div><b>Pubblicazione automatica degli articoli verificati</b><div class="note">Se disattivata, ogni bozza resta in revisione finché non la approvi tu.</div></div></div>
+    <div class="grid2"><div class="f"><label for="s-lim">Bozze automatiche al giorno (massimo)</label><input id="s-lim" type="number" min="0" max="5" value="${esc(c.limiteBozze)}" ${dis}></div>
+    <div class="f"><label for="s-fin">Finestra di recupero (giorni)</label><input id="s-fin" type="number" min="1" max="14" value="${esc(c.finestraRecuperoGiorni)}" ${dis}></div></div>
+    <div><button class="btn" data-act="savelim" ${dis}>Salva limiti</button></div></div>
+  <div class="card"><div class="label">Argomenti seguiti</div>
+    <div class="tags">${(c.argomenti||[]).map((a,i)=>`<span class="tagx">${esc(a)}${dis?"":`<button aria-label="Rimuovi ${esc(a)}" data-rmarg="${i}">×</button>`}</span>`).join("")||'<span class="note">Nessun argomento impostato.</span>'}</div>
+    ${dis?"":`<form id="addArg" style="display:flex;gap:8px;flex-wrap:wrap"><input id="s-arg" class="search" placeholder="Aggiungi un argomento" style="min-width:0;flex:1"><button class="btn" type="submit">Aggiungi</button></form>`}</div>`;
+}
+
+/* ---------------- actions ---------------- */
+function nowIso(){return new Date().toISOString();}
+async function who(){try{return S.user?await S.user.id():null}catch(e){return null}}
+async function saveBozza(extra,okMsg){
+  const d=Object.assign({},S.dirty,extra||{});d.aggiornata=nowIso();
+  d.storia=(d.storia||[]).concat(extra&&extra._evento?[{quando:d.aggiornata,cosa:extra._evento,chi:await who()}]:[]);
+  delete d._evento;const id=d.id;delete d.id;
+  try{await S.db.doc("bozze/"+id).set(d);S.dirty=null;toast(okMsg||"Salvato");}catch(e){toast(e&&e.code==="invalid_argument"?"Non hai i permessi per modificare.":"Salvataggio non riuscito, riprova.");}
+}
+async function fire(text,okMsg){
+  const tid=(S.config||{}).triggerId;
+  if(!tid){toast("Attività programmata non ancora collegata.");return false;}
+  if(!S.mcp){toast("Avvio non disponibile in questa vista: apri la pagina su claude.ai.");return false;}
+  try{await S.mcp.callTool(SERVER,"fire_trigger",{trigger_id:tid,text:text});toast(okMsg);return true;}
+  catch(e){const c=e&&e.code;
+    toast(c==="server_not_connected"?"Collega «Claude Code Remote» in Impostazioni → Connettori.":c==="needs_reauth"?"Ricollega «Claude Code Remote» in Impostazioni → Connettori.":c==="approval_required"||c==="not_in_manifest"?"Serve la tua autorizzazione per avviare la scansione da qui.":c==="server_unavailable"||c==="upstream_error"?"Avvio non confermato: controlla lo Storico tra qualche minuto prima di riprovare.":"Avvio non riuscito ("+(c||"errore")+").");return false;}
+}
+async function exportFile(kind){
+  const d=cur();if(!d)return;
+  if(!S.dl){toast("Esportazione non disponibile in questa vista.");return;}
+  const date=d.date||{};const refs=(d.fontiUfficiali||[]).filter(f=>f.aperta).map(f=>`- [${f.titolo||f.url}](${f.url})${f.ente?" — "+f.ente:""}`).concat((d.fontiSpecialistiche||[]).map(s=>`- [${s.titolo||s.url}](${s.url}) — ${s.testata||""}${s.autore?", "+s.autore:""}`));
+  const md=`---\ntitolo: "${(d.titolo||"").replace(/"/g,"'")}"\ntitolo_seo: "${(d.titoloSeo||"").replace(/"/g,"'")}"\nslug: ${d.slug||""}\nmeta_description: "${(d.metaDescription||"").replace(/"/g,"'")}"\ncategoria: ${d.categoria||""}\nstato_atto: ${d.statoAtto||""}\ndata_documento: ${date.pubblicazione||""}\nentrata_in_vigore: ${date.entrataInVigore||"non applicabile"}\ndecorrenza: ${date.decorrenza||"non applicabile"}\nstato_bozza: ${d.stato}\n---\n\n# ${d.titolo||""}\n\n${d.corpo||""}\n\n## Riferimenti\n\n${refs.join("\n")}\n`;
+  let data=md,name=(d.slug||"articolo")+".md";
+  if(kind==="html"){name=(d.slug||"articolo")+".html";data=`<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(d.titoloSeo||d.titolo)}</title><meta name="description" content="${esc(d.metaDescription)}"><style>body{font:16px/1.7 Georgia,serif;max-width:720px;margin:40px auto;padding:0 16px;color:#1a2230}h1{font-size:30px;line-height:1.2}dl{display:grid;grid-template-columns:160px 1fr;gap:4px;font:14px/1.5 system-ui;background:#f4f6f9;padding:12px 16px}dt{color:#5a6573}a{color:#1e3a5f}</style></head><body><h1>${esc(d.titolo)}</h1><p><em>${esc(d.sintesi)}</em></p><dl><dt>Stato</dt><dd>${esc(STATI_ATTO[d.statoAtto]||d.statoAtto)}</dd><dt>Data del documento</dt><dd>${dIt(date.pubblicazione)}</dd><dt>Entrata in vigore</dt><dd>${date.entrataInVigore?dIt(date.entrataInVigore):"Non applicabile"}</dd><dt>Decorrenza</dt><dd>${date.decorrenza?dIt(date.decorrenza):"Non applicabile"}</dd></dl>${mdHtml(d.corpo)}<h2>Riferimenti</h2>${mdHtml(refs.join("\n"))}</body></html>`;}
+  try{await S.dl.save({filename:name,data:data});toast("File pronto");}catch(e){if(e&&e.code!=="declined")toast("Esportazione non riuscita ("+(e&&e.code||"errore")+").");}
+}
+
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.id==="newsSearch"){S.newsQ=t.value;renderNotizie();return;}
+  const d=S.dirty;if(!d)return;
+  if(t.dataset.k){d[t.dataset.k]=t.value;}
+  else if(t.dataset.dk){d.date=d.date||{};d.date[t.dataset.dk]=t.value||null;}
+  else if(t.dataset.c!=null){const c=d.scheda.controlli[+t.dataset.c];c[t.dataset.ck]=t.dataset.ck==="essenziale"?t.value==="1":t.value;}
+  else return;
+  // refresh gate + counters without losing focus
+  clearTimeout(window._g);window._g=setTimeout(()=>{const a=document.activeElement&&document.activeElement.id;const pos=document.activeElement&&document.activeElement.selectionStart;renderEditor();if(a){const el=document.getElementById(a);if(el){el.focus();try{if(pos!=null)el.setSelectionRange(pos,pos)}catch(_){}}}},500);
+});
+document.addEventListener("change",e=>{const t=e.target;
+  if(t.id==="daySel"){S.day=t.value;renderBriefing();}
+  if(t.tagName==="SELECT"&&(t.dataset.k||t.dataset.c!=null))t.dispatchEvent(new Event("input",{bubbles:true}));
+});
+document.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(e.target.id==="addFonte"){
+    const nome=$("#nf-nome").value.trim(),dom=$("#nf-dominio").value.trim().toLowerCase().replace(/^https?:\/\//,"").replace(/^www\./,"").replace(/\/.*$/,"");
+    if(!nome||!/^[a-z0-9.-]+\.[a-z]{2,}$/.test(dom)){toast("Indica un nome e un dominio valido, es. esempio.it");return;}
+    if(S.fonti.some(f=>f.dominio===dom)){toast("Questo dominio è già in elenco.");return;}
+    const id=dom.replace(/[^a-z0-9]/g,"-");
+    try{await S.db.doc("fonti/"+id).set({nome,dominio:dom,categoria:$("#nf-cat").value,attiva:true,note:$("#nf-note").value.trim(),aggiunta:nowIso()});toast("Fonte aggiunta");}catch(err){toast("Non è stato possibile aggiungere la fonte.");}
+  }
+  if(e.target.id==="addArg"){const v=$("#s-arg").value.trim();if(!v)return;const a=(S.config.argomenti||[]).concat([v]);try{await S.db.doc("config/impostazioni").update({argomenti:a});toast("Argomento aggiunto");}catch(err){toast("Salvataggio non riuscito.");}}
+});
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("button,[data-art]");if(!t)return;
+  if(t.dataset.af){S.artFilter=t.dataset.af;S.artSel=null;S.dirty=null;renderArticoli();return;}
+  if(t.dataset.art){if(S.dirty&&S.artSel!==t.dataset.art){const o=S.bozze.find(x=>x.id===S.dirty.id);if(o&&JSON.stringify(o)!==JSON.stringify(S.dirty)){toast("Salva o annulla le modifiche prima di cambiare articolo.");return;}}
+    S.artSel=t.dataset.art;S.dirty=null;S.preview=false;S.confirm=null;renderArticoli();return;}
+  if(t.dataset.openArt){S.artSel=t.dataset.openArt;S.dirty=null;S.artFilter="tutti";go("articoli");return;}
+  if(t.dataset.req){const id=t.dataset.req;t.disabled=true;
+    try{const n=S.notizie.find(x=>x.id===id);const ref=S.db.doc("notizie/"+id);await ref.update({richiestaBozza:true,richiestaIl:nowIso(),richiestaDa:await who()});
+      await fire("Avvio manuale dalla Scrivania: genera la bozza per la notizia richiesta (id "+id+").","Bozza richiesta: la scansione è partita") || toast("Bozza richiesta: arriverà con la prossima scansione.");}
+    catch(err){t.disabled=false;toast("Richiesta non salvata, riprova.");}return;}
+  if(t.dataset.toggle){const f=S.fonti.find(x=>x.id===t.dataset.toggle);if(!f)return;try{await S.db.doc("fonti/"+f.id).update({attiva:f.attiva===false});}catch(err){toast("Modifica non riuscita.");}return;}
+  if(t.dataset.delfonte){S.confirm={act:"delfonte",id:t.dataset.delfonte};renderFonti();return;}
+  if(t.dataset.rmarg!=null){const a=(S.config.argomenti||[]).filter((_,i)=>i!==+t.dataset.rmarg);try{await S.db.doc("config/impostazioni").update({argomenti:a});}catch(err){toast("Salvataggio non riuscito.");}return;}
+  if(t.dataset.unblock!=null&&S.dirty){S.dirty.scheda.dubbi[+t.dataset.unblock].bloccante=false;renderEditor();return;}
+  if(t.dataset.opened!=null&&S.dirty){S.dirty.fontiUfficiali[+t.dataset.opened].aperta=true;S.dirty.fontiUfficiali[+t.dataset.opened].consultataDa="redazione";renderEditor();return;}
+  const a=t.dataset.act;if(!a)return;
+  if(t.id==="runNow")return;
+  switch(a){
+    case "pv":S.preview=!S.preview;renderEditor();break;
+    case "save":await saveBozza({_evento:"Modifiche salvate dalla redazione"},"Modifiche salvate");break;
+    case "review":await saveBozza({stato:"in_revisione",_evento:"Messo in revisione"},"In revisione");break;
+    case "approve":{const d=S.dirty;if(gate(d).length){toast("Risolvi prima i punti bloccanti.");return;}
+      await saveBozza({stato:"approvato",approvataIl:nowIso(),approvataDa:await who(),_evento:d.stato==="pubblicato"?"Correzione approvata per la ripubblicazione":"Approvato per la pubblicazione"},"Approvato: andrà online alla prossima scansione");break;}
+    case "publishnow":await fire("Avvio manuale dalla Scrivania: SOLO PUBBLICAZIONE delle bozze approvate e dei ritiri, senza nuova scansione.","Pubblicazione avviata: l'articolo sarà online tra pochi minuti");break;
+    case "withdraw":S.confirm={id:S.dirty.id,act:"withdraw",msg:"Ritirare l'articolo dal sito? La pagina verrà rimossa alla prossima esecuzione."};renderEditor();break;
+    case "withdraw-ok":S.confirm=null;await saveBozza({stato:"da_ritirare",_evento:"Ritiro richiesto dalla redazione"},"Ritiro richiesto");break;
+    case "delfonte-ok":{const id=S.confirm&&S.confirm.id;S.confirm=null;if(id){try{await S.db.doc("fonti/"+id).delete();toast("Fonte rimossa");}catch(err){toast("Rimozione non riuscita.");}}render();break;}
+    case "cancel":S.confirm=null;render();break;
+    case "addctl":S.dirty.scheda.controlli.push({dato:"",valore:"",riferimento:"",fonte:"",essenziale:true,esito:"da_verificare"});renderEditor();break;
+    case "exmd":exportFile("md");break;
+    case "exhtml":exportFile("html");break;
+    case "autopub":try{await S.db.doc("config/impostazioni").update({pubblicazioneAutomatica:!(S.config.pubblicazioneAutomatica!==false)});toast("Impostazione salvata");}catch(err){toast("Salvataggio non riuscito.");}break;
+    case "savelim":{const lim=Math.max(0,Math.min(5,parseInt($("#s-lim").value,10)||0)),fin=Math.max(1,Math.min(14,parseInt($("#s-fin").value,10)||3));
+      try{await S.db.doc("config/impostazioni").update({limiteBozze:lim,finestraRecuperoGiorni:fin});toast("Limiti salvati");}catch(err){toast("Salvataggio non riuscito.");}break;}
+    case "saveorario":{const v=$("#s-orario").value;const m=/^(\d{2}):(\d{2})$/.exec(v||"");if(!m){toast("Orario non valido.");return;}
+      try{await S.db.doc("config/impostazioni").update({orario:v});}catch(err){toast("Salvataggio non riuscito.");return;}
+      const tid=S.config.triggerId;if(!tid||!S.mcp){toast("Orario salvato: verrà applicato al collegamento.");return;}
+      try{await S.mcp.callTool(SERVER,"update_trigger",{trigger_id:tid,cron_expression:`CRON_TZ=Europe/Rome ${+m[2]} ${+m[1]} * * *`});toast("Orario aggiornato");}
+      catch(err){toast("Orario salvato, ma l'attività non è stata aggiornata ("+(err&&err.code||"errore")+").");}break;}
+  }
+});
+$("#runNow").addEventListener("click",async()=>{const b=$("#runNow");b.disabled=true;await fire("Avvio manuale dalla Scrivania: scansione completa.","Scansione avviata: il briefing sarà pronto tra qualche minuto");setTimeout(()=>{b.disabled=false},20000);});
+
+boot();
+})();
+</script>

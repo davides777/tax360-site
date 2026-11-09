@@ -1,0 +1,28 @@
+[
+  {"id": "gu", "nome": "Gazzetta Ufficiale", "dominio": "gazzettaufficiale.it", "categoria": "ufficiale", "attiva": true, "note": "Testi pubblicati e testi coordinati"},
+  {"id": "normattiva", "nome": "Normattiva", "dominio": "normattiva.it", "categoria": "ufficiale", "attiva": true, "note": "Testo vigente e versioni nel tempo"},
+  {"id": "ade", "nome": "Agenzia delle Entrate", "dominio": "agenziaentrate.gov.it", "categoria": "ufficiale", "attiva": true, "note": "Circolari, risoluzioni, interpelli, provvedimenti"},
+  {"id": "fiscooggi", "nome": "FiscoOggi (rivista dell'Agenzia delle Entrate)", "dominio": "fiscooggi.it", "categoria": "ufficiale", "attiva": true, "note": "Canale editoriale ufficiale dell'Agenzia"},
+  {"id": "ader", "nome": "Agenzia delle Entrate-Riscossione", "dominio": "agenziaentrateriscossione.gov.it", "categoria": "ufficiale", "attiva": true, "note": "Rottamazioni, rateizzazioni, cartelle"},
+  {"id": "mef", "nome": "Ministero dell'Economia e delle Finanze", "dominio": "mef.gov.it", "categoria": "ufficiale", "attiva": true, "note": "Comunicati e decreti"},
+  {"id": "df", "nome": "MEF — Dipartimento Finanze", "dominio": "finanze.gov.it", "categoria": "ufficiale", "attiva": true, "note": "Circolari e risoluzioni DF, fiscalità locale"},
+  {"id": "governo", "nome": "Governo — Consiglio dei Ministri", "dominio": "governo.it", "categoria": "ufficiale", "attiva": true, "note": "Comunicati CdM: provvedimenti approvati, non ancora in GU"},
+  {"id": "senato", "nome": "Senato della Repubblica", "dominio": "senato.it", "categoria": "ufficiale", "attiva": true, "note": "Disegni di legge ed esame parlamentare (proposte)"},
+  {"id": "camera", "nome": "Camera dei Deputati", "dominio": "camera.it", "categoria": "ufficiale", "attiva": true, "note": "Disegni di legge, dossier dei servizi studi"},
+  {"id": "giustiziatrib", "nome": "Giustizia tributaria", "dominio": "giustiziatributaria.gov.it", "categoria": "ufficiale", "attiva": true, "note": "Corti di giustizia tributaria"},
+  {"id": "cassazione", "nome": "Corte di Cassazione", "dominio": "cortedicassazione.it", "categoria": "ufficiale", "attiva": true, "note": "Sentenze e ordinanze sezione tributaria"},
+  {"id": "consulta", "nome": "Corte costituzionale", "dominio": "cortecostituzionale.it", "categoria": "ufficiale", "attiva": true, "note": "Pronunce su norme tributarie"},
+  {"id": "eurlex", "nome": "EUR-Lex", "dominio": "eur-lex.europa.eu", "categoria": "ufficiale", "attiva": true, "note": "Direttive e regolamenti UE"},
+  {"id": "curia", "nome": "Corte di giustizia dell'Unione europea", "dominio": "curia.europa.eu", "categoria": "ufficiale", "attiva": true, "note": "Sentenze in materia di IVA e fiscalità UE"},
+
+  {"id": "sole24ore", "nome": "Il Sole 24 Ore — Norme & Tributi", "dominio": "ilsole24ore.com", "categoria": "specialistica", "attiva": true, "note": "Quotidiano economico di riferimento"},
+  {"id": "italiaoggi", "nome": "ItaliaOggi", "dominio": "italiaoggi.it", "categoria": "specialistica", "attiva": true, "note": "Quotidiano fiscale e professionale"},
+  {"id": "eutekne", "nome": "Eutekne — Il Quotidiano del Commercialista", "dominio": "eutekne.info", "categoria": "specialistica", "attiva": true, "note": "Quotidiano per i commercialisti"},
+  {"id": "ipsoa", "nome": "IPSOA Quotidiano (Wolters Kluwer)", "dominio": "ipsoa.it", "categoria": "specialistica", "attiva": true, "note": "Fisco, lavoro, impresa"},
+  {"id": "fiscoetasse", "nome": "FISCOeTASSE", "dominio": "fiscoetasse.com", "categoria": "specialistica", "attiva": true, "note": "Indicata dalla redazione nel brief iniziale"},
+  {"id": "fiscalfocus", "nome": "Fiscal Focus", "dominio": "fiscal-focus.it", "categoria": "specialistica", "attiva": true, "note": "Quotidiano fiscale"},
+  {"id": "euroconference", "nome": "Euroconference News", "dominio": "euroconference.it", "categoria": "specialistica", "attiva": true, "note": "Approfondimenti tributari"},
+  {"id": "commtelematico", "nome": "Il Commercialista Telematico", "dominio": "commercialistatelematico.com", "categoria": "specialistica", "attiva": true, "note": "Approfondimenti e casi pratici"},
+  {"id": "cndcec", "nome": "Consiglio Nazionale Dottori Commercialisti", "dominio": "commercialisti.it", "categoria": "specialistica", "attiva": true, "note": "Documenti e informative della categoria"},
+  {"id": "fnc", "nome": "Fondazione Nazionale dei Commercialisti", "dominio": "fondazionenazionalecommercialisti.it", "categoria": "specialistica", "attiva": true, "note": "Documenti di ricerca"}
+]

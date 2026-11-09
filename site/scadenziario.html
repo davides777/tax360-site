@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scadenziario Fiscale 2026 — TAX360 Professional Advisory</title>
+<meta name="description" content="Scadenziario fiscale 2026: tutte le principali scadenze mese per mese. IVA, imposte, contributi, dichiarazioni e comunicazioni.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+
+</head>
+<body>
+
+<!-- ===== SLIDE-OUT MENU ===== -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<aside class="menu-panel" id="menuPanel" aria-hidden="true">
+  <div class="menu-panel-top">
+    <img src="assets/logo-dark.png" alt="TAX360 — Professional Advisory">
+    <button class="menu-close" id="menuClose" aria-label="Chiudi menu">&times;</button>
+  </div>
+  <ul class="menu-nav">
+    <li><a href="index.html" data-close><span class="idx">00</span> Home</a></li>
+    <li><a href="chisiamo.html" data-close><span class="idx">01</span> Chi siamo</a></li>
+    <li><a href="servizi.html" data-close><span class="idx">02</span> Servizi</a></li>
+    <li><a href="news.html" data-close><span class="idx">03</span> News Fiscali</a></li>
+    <li><a href="scadenziario.html" class="active" data-close><span class="idx">04</span> Scadenziario</a></li>
+    <li><a href="contatti.html" data-close><span class="idx">05</span> Contatti</a></li>
+    <li><a href="prenota.html" data-close><span class="idx">06</span> Prenota Consulenza</a></li>
+  </ul>
+  <div class="menu-panel-foot">
+    <div class="mp-label">Contatti</div>
+    <a href="tel:+390965885627">0965 885627</a><br>
+    <a href="tel:3409981212">340 998 1212</a> &middot; <a href="tel:3293679707">329 367 9707</a><br>
+    <a href="mailto:studio@tax360.it">studio@tax360.it</a><br>
+    www.tax360.it
+  </div>
+</aside>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="solid">
+  <div class="nav-wrap">
+    <div class="nav-left">
+      <button class="menu-toggle" id="menuToggle" aria-label="Apri menu"><span></span><span></span><span></span></button>
+      <a href="index.html" class="logo"><img src="assets/logo-light.png" alt="TAX360 — Professional Advisory" id="logoImg"></a>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        <li><a href="chisiamo.html">Chi siamo</a></li>
+        <li><a href="servizi.html">Servizi</a></li>
+        <li><a href="news.html">News Fiscali</a></li>
+        <li><a href="scadenziario.html" class="active">Scadenziario</a></li>
+        <li><a href="prenota.html" class="nav-cta">Prenota Consulenza</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="hero-glow"></div>
+  <div class="page-hero-orbits"><svg viewBox="0 0 100 100" fill="none">
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="46" ry="18" stroke="#b8973e" stroke-width=".5" transform="rotate(25 50 50)"/>
+  <ellipse class="orbit-spin-rev" cx="50" cy="50" rx="46" ry="18" stroke="#fff" stroke-width=".4" transform="rotate(-20 50 50)"/>
+  <ellipse class="orbit-spin" cx="50" cy="50" rx="38" ry="44" stroke="#b8973e" stroke-width=".4" transform="rotate(70 50 50)"/>
+</svg></div>
+  <div class="container">
+    <span class="eyebrow">Scadenziario</span>
+    <h1>Il tuo <span class="em">calendario</span> fiscale</h1>
+    <p class="lead">Tutte le principali scadenze fiscali dell'anno, mese per mese. Le scadenze imminenti sono evidenziate per non perdere nessun adempimento.</p>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span>Scadenziario</div>
+  </div>
+</section>
+
+<section style="background:var(--paper)">
+  <div class="container">
+
+    <!-- toolbar: mese selector + legenda -->
+    <div class="reveal-on-scroll" style="margin-bottom:2.5rem">
+      <div class="scad-toolbar">
+        <div class="scad-months" id="scadMonths"></div>
+      </div>
+      <div class="scad-legend" id="scadLegend"></div>
+    </div>
+
+    <!-- next deadline highlight -->
+    <div id="nextDeadline" class="reveal-on-scroll"></div>
+
+    <!-- month deadlines -->
+    <div id="scadList" class="reveal-on-scroll"></div>
+
+    <!-- nota fonte -->
+    <p style="margin-top:3rem;font-size:.82rem;color:#8791a0;font-weight:300;max-width:70ch">
+      Le scadenze riportate hanno carattere informativo e riguardano i principali adempimenti.
+      Per il dettaglio completo e sempre aggiornato si rimanda al
+      <a href="https://www1.agenziaentrate.gov.it/servizi/scadenzario/main.php" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none">scadenzario ufficiale dell'Agenzia delle Entrate</a>.
+      In caso di dubbi, <a href="prenota.html" style="color:var(--gold);text-decoration:none">contatta lo studio</a>.
+    </p>
+  </div>
+</section>
+
+<style>
+.scad-toolbar{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1.2rem}
+.scad-months{display:flex;flex-wrap:wrap;gap:.5rem;width:100%}
+.scad-month-btn{font-family:var(--sans);font-size:.85rem;font-weight:600;letter-spacing:.02em;color:var(--navy);
+  background:#fff;border:1px solid rgba(30,58,95,.15);border-radius:2px;padding:.6rem 1rem;cursor:pointer;
+  transition:all .25s;white-space:nowrap}
+.scad-month-btn:hover{border-color:var(--gold);color:var(--gold)}
+.scad-month-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.scad-month-btn .cnt{opacity:.6;font-weight:400;margin-left:.3rem}
+.scad-legend{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+.scad-legend .lg{display:inline-flex;align-items:center;gap:.45rem;font-size:.76rem;color:#5a6573;font-weight:500}
+.scad-legend .dot{width:11px;height:11px;border-radius:50%}
+.next-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-deep) 100%);color:#fff;border-radius:4px;
+  padding:1.8rem 2rem;margin-bottom:2.5rem;display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;position:relative;overflow:hidden}
+.next-card .nc-badge{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-light);font-weight:700}
+.next-card .nc-date{font-family:var(--serif);font-size:2.4rem;font-weight:600;line-height:1;color:#fff}
+.next-card .nc-info{flex:1;min-width:200px}
+.next-card .nc-info p{font-weight:300;color:rgba(255,255,255,.82);margin-top:.3rem}
+.next-card .nc-count{font-size:.85rem;color:var(--gold-light);font-weight:600;margin-top:.5rem}
+.scad-day{margin-bottom:1.6rem;background:#fff;border:1px solid rgba(30,58,95,.08);border-radius:4px;overflow:hidden;
+  display:grid;grid-template-columns:120px 1fr}
+.scad-day.soon{border-color:rgba(184,151,62,.5);box-shadow:0 8px 24px rgba(184,151,62,.1)}
+.scad-day.past{opacity:.5}
+.scad-day-date{background:var(--paper-warm);padding:1.6rem 1rem;text-align:center;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;border-right:1px solid rgba(30,58,95,.06)}
+.scad-day.soon .scad-day-date{background:linear-gradient(135deg,rgba(184,151,62,.14),rgba(184,151,62,.06))}
+.scad-day-date .d{font-family:var(--serif);font-size:2.4rem;font-weight:700;color:var(--navy);line-height:1}
+.scad-day-date .m{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-top:.3rem}
+.scad-day-date .soon-tag{margin-top:.5rem;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  background:var(--gold);color:var(--navy-deep);padding:.18rem .45rem;border-radius:2px}
+.scad-day-items{padding:1rem 1.4rem;display:flex;flex-direction:column;justify-content:center}
+.scad-item{display:flex;align-items:flex-start;gap:.8rem;padding:.6rem 0;border-bottom:1px solid rgba(30,58,95,.06)}
+.scad-item:last-child{border-bottom:none}
+.scad-item .dot{width:9px;height:9px;border-radius:50%;margin-top:.5rem;flex:none}
+.scad-item .it-text{font-size:.96rem;color:#2c3845;font-weight:400;line-height:1.5}
+.scad-item .it-cat{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700;margin-left:.5rem;opacity:.75}
+@media(max-width:600px){.scad-day{grid-template-columns:84px 1fr}.scad-day-date .d{font-size:1.8rem}}
+</style>
+
+<script src="assets/scadenze-2026.js"></script>
+<script>
+(function(){
+  const CAT_COLORS={
+    "IVA":"#1e3a5f","Imposte":"#b8973e","Contributi":"#3a7d5f",
+    "Dichiarazioni":"#7a4ea3","Comunicazioni":"#c2683a","Altro":"#9a9a9a"
+  };
+  const TODAY=new Date();
+  const CUR_Y=2026;
+  const monthsEl=document.getElementById('scadMonths');
+  const legendEl=document.getElementById('scadLegend');
+  const listEl=document.getElementById('scadList');
+  const nextEl=document.getElementById('nextDeadline');
+
+  // legend
+  Object.keys(CAT_COLORS).forEach(c=>{
+    const s=document.createElement('span');s.className='lg';
+    s.innerHTML='<span class="dot" style="background:'+CAT_COLORS[c]+'"></span>'+c;
+    legendEl.appendChild(s);
+  });
+
+  // month buttons
+  let current = (TODAY.getFullYear()===CUR_Y) ? (TODAY.getMonth()+1) : 1;
+  Object.keys(SCADENZE_2026).forEach(m=>{
+    const mo=SCADENZE_2026[m];
+    const b=document.createElement('button');b.className='scad-month-btn';b.dataset.m=m;
+    b.innerHTML=mo.nome+' <span class="cnt">'+mo.voci.length+'</span>';
+    b.addEventListener('click',()=>{current=+m;render();});
+    monthsEl.appendChild(b);
+  });
+
+  function daysBetween(g,m){
+    const d=new Date(CUR_Y,m-1,g);
+    return Math.ceil((d-TODAY)/(1000*60*60*24));
+  }
+
+  // find next upcoming deadline across the year
+  function findNext(){
+    let best=null;
+    Object.keys(SCADENZE_2026).forEach(m=>{
+      SCADENZE_2026[m].voci.forEach(v=>{
+        const diff=daysBetween(v.g,+m);
+        if(diff>=0 && (!best || diff<best.diff)) best={diff:diff,g:v.g,m:+m,mese:SCADENZE_2026[m].nome};
+      });
+    });
+    return best;
+  }
+
+  function render(){
+    document.querySelectorAll('.scad-month-btn').forEach(b=>b.classList.toggle('active',+b.dataset.m===current));
+    const mo=SCADENZE_2026[current];
+
+    // group by day
+    const byDay={};
+    mo.voci.forEach(v=>{(byDay[v.g]=byDay[v.g]||[]).push(v);});
+    const days=Object.keys(byDay).map(Number).sort((a,b)=>a-b);
+
+    listEl.innerHTML='';
+    days.forEach(g=>{
+      const diff=daysBetween(g,current);
+      const soon = diff>=0 && diff<=7;
+      const past = diff<0;
+      const wrap=document.createElement('div');
+      wrap.className='scad-day'+(soon?' soon':'')+(past?' past':'');
+      let items='';
+      byDay[g].forEach(v=>{
+        const col=CAT_COLORS[v.cat]||CAT_COLORS.Altro;
+        items+='<div class="scad-item"><span class="dot" style="background:'+col+'"></span>'
+              +'<span class="it-text">'+v.t+'<span class="it-cat" style="color:'+col+'">'+v.cat+'</span></span></div>';
+      });
+      wrap.innerHTML='<div class="scad-day-date"><span class="d">'+g+'</span><span class="m">'+mo.nome.slice(0,3)+'</span>'
+                    +(soon?'<span class="soon-tag">Imminente</span>':'')+'</div>'
+                    +'<div class="scad-day-items">'+items+'</div>';
+      listEl.appendChild(wrap);
+    });
+  }
+
+  // next deadline banner
+  const nx=findNext();
+  if(nx){
+    const cnt=SCADENZE_2026[nx.m].voci.filter(v=>v.g===nx.g).length;
+    let when = nx.diff===0?'Oggi':(nx.diff===1?'Domani':'Tra '+nx.diff+' giorni');
+    nextEl.innerHTML='<div class="next-card"><div><div class="nc-badge">Prossima scadenza</div>'
+      +'<div class="nc-date">'+nx.g+' '+nx.mese+'</div></div>'
+      +'<div class="nc-info"><strong>'+when+'</strong><p>'+cnt+' adempiment'+(cnt>1?'i':'o')+' in scadenza. Pianifica per tempo.</p>'
+      +'<a href="prenota.html" style="color:var(--gold-light);text-decoration:none;font-weight:600;font-size:.9rem">Hai bisogno di assistenza? &rarr;</a></div></div>';
+  }
+
+  render();
+})();
+</script>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-col foot-about">
+        <a href="index.html" class="logo logo--foot"><img src="assets/logo-dark.png" alt="TAX360 — Professional Advisory"></a>
+        <p>Consulenza tributaria, societaria e strategica per imprese e gruppi. Una visione integrata al servizio della crescita.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Studio</h5>
+        <ul>
+          <li><a href="chisiamo.html">Chi siamo</a></li>
+          <li><a href="servizi.html">Servizi</a></li>
+          <li><a href="news.html">News fiscali</a></li>
+          <li><a href="scadenziario.html">Scadenziario</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contatti</h5>
+        <ul>
+          <li><a href="tel:+390965885627">0965 885627</a></li>
+          <li><a href="tel:3409981212">340 998 1212</a></li>
+          <li><a href="tel:3293679707">329 367 9707</a></li>
+          <li><a href="mailto:studio@tax360.it">studio@tax360.it</a></li>
+          <li><a href="contatti.html#sede">Via Crocefisso 34, Reggio Calabria</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Dati</h5>
+        <ul>
+          <li>P.IVA / C.F. 03356200802</li>
+          <li>Cod. univoco G9HZJRW</li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>&copy; 2026 TAX360 — Professional Advisory. Tutti i diritti riservati.</p>
+      <p>www.tax360.it</p>
+    </div>
+  </div>
+</footer>
+<script src="assets/main.js"></script>
+</body>
+</html>
