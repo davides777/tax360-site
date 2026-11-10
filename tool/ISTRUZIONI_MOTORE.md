@@ -12,6 +12,7 @@ Riferimenti fissi:
 
 ## 0. Modalità
 - Se il messaggio di avvio contiene **"SOLO PUBBLICAZIONE"**: esegui solo i passi 1, 2 e 3, poi chiudi (passo 11).
+  È una richiesta esplicita della redazione: pubblica subito, anche fuori dal calendario.
 - Se contiene "Avvio manuale": è una scansione manuale (`manuale: true`).
 - Data e ora: usa il fuso Europe/Rome. ID scansione = `AAAA-MM-GGTHH-MM` (ora italiana).
 
@@ -23,17 +24,29 @@ Riferimenti fissi:
    Salva in `tool/` le fonti come `fonti.json` (array di {id, nome, dominio, categoria, attiva}) e le notizie in `storico.json`.
 4. Crea il documento `scansioni/<id>` con `{avvio, esito: "in_corso", manuale}`.
 
-## 2. Coda di pubblicazione (prima di tutto)
-- Per ogni bozza con `stato: "approvato"`: salvala in `bozza.json` e lancia
+## Calendario delle pubblicazioni (leggilo prima dei passi 2, 3 e 8)
+Ogni pubblicazione sul sito consuma crediti del piano gratuito di Netlify, quindi il sito si aggiorna
+**al massimo una volta per esecuzione** e, salvo richiesta esplicita, **solo nei giorni di pubblicazione**.
+- È **giorno di pubblicazione** se vale almeno una di queste condizioni: il messaggio contiene "SOLO PUBBLICAZIONE";
+  `config.ultimaPubblicazione` è assente; oggi ≥ `config.ultimaPubblicazione` + `config.pubblicaOgniGiorni` giorni
+  (se `pubblicaOgniGiorni` manca, vale 1).
+- Ricerca, verifica, briefing e bozze si fanno **ogni giorno** (non toccano il sito).
+- I ritiri (`da_ritirare`) si eseguono sempre, anche fuori calendario: correggere un errore viene prima del risparmio.
+- Ordine nell'esecuzione normale: passi 1, 4, 5, 6, 7, 8, poi il passo 2 (coda) e il passo 3 (un solo salvataggio), poi 9 e 11.
+
+## 2. Coda di pubblicazione
+- **Solo nel giorno di pubblicazione**, per ogni bozza con `stato: "approvato"` (comprese quelle scritte oggi al passo 8): salvala in `bozza.json` e lancia
   `python -m tax360news publish fonti.json bozza.json ../site`.
   - Esito 0 → aggiorna la bozza: `stato: "pubblicato"`, `url`, `pubblicataIl` (data), evento in `storia`.
   - Esito 2 → `stato: "da_verificare"` e aggiungi i motivi a `scheda.puntiRevisore`.
-- Per ogni bozza con `stato: "da_ritirare"`: `python -m tax360news unpublish <slug> ../site` → `stato: "ritirato"`.
+- Per ogni bozza con `stato: "da_ritirare"` (sempre): `python -m tax360news unpublish <slug> ../site` → `stato: "ritirato"`.
+- Fuori dal giorno di pubblicazione le bozze approvate restano `approvato` (in coda): non pubblicarle.
 - **Non pubblicare mai a mano**: solo tramite il comando `publish`, che applica il controllo bloccante.
 
-## 3. Salvataggio sul sito
+## 3. Salvataggio sul sito (una sola volta per esecuzione)
 Se `site/` è cambiato, dalla cartella principale dell'archivio (i comandi `python -m tax360news` girano invece da `tool/`):
 `git add site && git commit -m "News: <titoli>" && git push`. Prima del push esegui `git pull --rebase` per includere eventuali modifiche arrivate nel frattempo.
+Se il push riesce e sono stati pubblicati articoli: `config.ultimaPubblicazione = <data di oggi>` (formato AAAA-MM-GG).
 Se il push fallisce, riporta le bozze appena pubblicate a `stato: "approvato"` (verranno ritentate) e annota l'errore nella scansione.
 
 ## 4. Finestra di ricerca
@@ -103,10 +116,11 @@ corpo (Markdown), fontiUfficiali, fontiSpecialistiche, scheda{controlli, dubbi, 
 
 **Controllo e pubblicazione**
 - `python -m tax360news gate fonti.json bozza.json`.
-- Se `pubblicabile` **e** `config.pubblicazioneAutomatica` è vera → `python -m tax360news publish fonti.json bozza.json ../site`,
-  poi `stato: "pubblicato"`, `url`, `pubblicataIl`. Altrimenti: `stato: "da_verificare"` se ci sono motivi di blocco
-  (aggiungili a `puntiRevisore`), `stato: "in_revisione"` se è pubblicabile ma la pubblicazione automatica è spenta.
-- Scrivi la bozza in `bozze/<slug>` e segna `bozzaId` nella scansione. Poi ripeti il passo 3 (commit e push).
+- Se `pubblicabile` **e** `config.pubblicazioneAutomatica` è vera → `stato: "approvato"` (in coda): andrà online
+  al passo 2 di oggi se è giorno di pubblicazione, altrimenti con la prossima pubblicazione.
+  Altrimenti: `stato: "da_verificare"` se ci sono motivi di blocco (aggiungili a `puntiRevisore`),
+  `stato: "in_revisione"` se è pubblicabile ma la pubblicazione automatica è spenta.
+- Scrivi la bozza in `bozze/<slug>` e segna `bozzaId` nella scansione. Poi prosegui con i passi 2 e 3.
 
 ## 9. Copertura
 `python -m tax360news coverage fonti.json tentativi.json` → salva il risultato come `copertura` nella scansione e nel briefing.
@@ -119,4 +133,5 @@ e lascia invariato `config.ultimaScansioneRiuscita`.
 - Aggiorna `scansioni/<id>`: `fine, esito: "completata" | "solo_pubblicazione" | "errore", copertura, notizieVerificate,
   segnalazioni, doppioni, bozzaId, nota`.
 - Se l'esito non è "errore": `config.ultimaScansioneRiuscita = <data di oggi>`.
-- Rispondi con un riepilogo di 3-5 righe: copertura, notizie verificate, segnalazioni, articolo pubblicato (con link) o motivo per cui non c'è.
+- Rispondi con un riepilogo di 3-5 righe: copertura, notizie verificate, segnalazioni, articoli pubblicati (con link)
+  oppure articoli in coda e data della prossima pubblicazione.

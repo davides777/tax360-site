@@ -242,7 +242,14 @@ const STATI_ATTO={proposta:"Proposta",pubblicato:"Pubblicato",in_vigore:"In vigo
 const STATI_BOZZA={da_verificare:["Da verificare","bad"],in_revisione:["In revisione","warn"],approvato:["Approvato, in coda","info"],pubblicato:["Pubblicato","ok"],da_ritirare:["Da ritirare","warn"],ritirato:["Ritirato","mute"]};
 const MESI=["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 const SERVER="Claude Code Remote";
-const DEF_CONFIG={orario:"08:00",limiteBozze:1,finestraRecuperoGiorni:3,pubblicazioneAutomatica:true,argomenti:[],triggerId:null,sitoUrl:"https://tax360.it"};
+const DEF_CONFIG={orario:"08:00",limiteBozze:1,finestraRecuperoGiorni:3,pubblicazioneAutomatica:true,pubblicaOgniGiorni:3,ultimaPubblicazione:null,argomenti:[],triggerId:null,sitoUrl:"https://tax360.it"};
+/* Prossimo giorno utile per pubblicare sul sito (ogni pubblicazione consuma crediti Netlify) */
+function nextPub(c){c=c||DEF_CONFIG;const n=Math.max(1,parseInt(c.pubblicaOgniGiorni,10)||1);
+  const oggi=new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Rome"}));oggi.setHours(0,0,0,0);
+  if(!c.ultimaPubblicazione)return {data:oggi,oggi:true};
+  const d=new Date(c.ultimaPubblicazione+"T00:00:00");d.setDate(d.getDate()+n);
+  return {data:d,oggi:d<=oggi};}
+function nextPubTxt(c){const p=nextPub(c);return p.oggi?"alla prossima scansione":"dal "+p.data.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});}
 
 /* ---------------- state ---------------- */
 const S={db:null,user:null,mcp:null,dl:null,canWrite:true,config:null,configVer:null,fonti:[],scansioni:[],briefing:[],notizie:[],bozze:[],
@@ -456,8 +463,8 @@ function renderEditor(){
     <div class="acts">
       <button class="btn" data-act="save" ${ro||!changed?"disabled":""}>Salva</button>
       ${["da_verificare"].includes(d.stato)?`<button class="btn" data-act="review" ${ro?"disabled":""}>Metti in revisione</button>`:""}
-      ${["da_verificare","in_revisione","pubblicato"].includes(d.stato)?`<button class="btn primary" data-act="approve" ${ro||motivi.length?"disabled":""} title="${motivi.length?"Risolvi prima i punti bloccanti":"Pubblica alla prossima scansione"}">${d.stato==="pubblicato"?"Ripubblica corretto":"Approva per la pubblicazione"}</button>`:""}
-      ${d.stato==="approvato"?`<button class="btn primary" data-act="publishnow" ${ro?"disabled":""}>Pubblica ora</button>`:""}
+      ${["da_verificare","in_revisione","pubblicato"].includes(d.stato)?`<button class="btn primary" data-act="approve" ${ro||motivi.length?"disabled":""} title="${motivi.length?"Risolvi prima i punti bloccanti":"Andrà online "+esc(nextPubTxt(S.config))}">${d.stato==="pubblicato"?"Ripubblica corretto":"Approva per la pubblicazione"}</button>`:""}
+      ${d.stato==="approvato"?`<span class="note">In coda: online ${esc(nextPubTxt(S.config))}</span><button class="btn primary" data-act="publishnow" ${ro?"disabled":""} title="Pubblica subito, fuori dal calendario (consuma una pubblicazione)">Pubblica ora</button>`:""}
       ${d.stato==="pubblicato"?`<button class="btn danger" data-act="withdraw" ${ro?"disabled":""}>Ritira dal sito</button>`:""}
       <button class="btn" data-act="exmd">Esporta .md</button><button class="btn" data-act="exhtml">Esporta .html</button>
     </div></div>`;
@@ -580,9 +587,11 @@ function renderSettings(){
   <div class="card"><div class="label">Pubblicazione</div>
     <div style="display:flex;gap:12px;align-items:center"><button class="switch" role="switch" aria-label="Pubblicazione automatica" aria-checked="${c.pubblicazioneAutomatica!==false}" data-act="autopub" ${dis}></button>
     <div><b>Pubblicazione automatica degli articoli verificati</b><div class="note">Se disattivata, ogni bozza resta in revisione finché non la approvi tu.</div></div></div>
+    <div class="f"><label for="s-ogni">Pubblica sul sito ogni (giorni)</label><input id="s-ogni" type="number" min="1" max="14" value="${esc(c.pubblicaOgniGiorni||1)}" ${dis}></div>
+    <p class="note" style="margin:0">Ricerca e briefing restano quotidiani. Gli articoli approvati si mettono in coda e vanno online tutti insieme con un'unica pubblicazione, che sul piano gratuito di Netlify consuma crediti. Ultima pubblicazione: <b>${c.ultimaPubblicazione?esc(new Date(c.ultimaPubblicazione+"T00:00:00").toLocaleDateString("it-IT",{day:"numeric",month:"long"})):"—"}</b> · prossima: <b>${esc(nextPubTxt(c))}</b>.</p>
     <div class="grid2"><div class="f"><label for="s-lim">Bozze automatiche al giorno (massimo)</label><input id="s-lim" type="number" min="0" max="5" value="${esc(c.limiteBozze)}" ${dis}></div>
     <div class="f"><label for="s-fin">Finestra di recupero (giorni)</label><input id="s-fin" type="number" min="1" max="14" value="${esc(c.finestraRecuperoGiorni)}" ${dis}></div></div>
-    <div><button class="btn" data-act="savelim" ${dis}>Salva limiti</button></div></div>
+    <div><button class="btn" data-act="savelim" ${dis}>Salva limiti e calendario</button></div></div>
   <div class="card"><div class="label">Argomenti seguiti</div>
     <div class="tags">${(c.argomenti||[]).map((a,i)=>`<span class="tagx">${esc(a)}${dis?"":`<button aria-label="Rimuovi ${esc(a)}" data-rmarg="${i}">×</button>`}</span>`).join("")||'<span class="note">Nessun argomento impostato.</span>'}</div>
     ${dis?"":`<form id="addArg" style="display:flex;gap:8px;flex-wrap:wrap"><input id="s-arg" class="search" placeholder="Aggiungi un argomento" style="min-width:0;flex:1"><button class="btn" type="submit">Aggiungi</button></form>`}</div>`;
@@ -663,7 +672,7 @@ document.addEventListener("click",async e=>{
     case "save":await saveBozza({_evento:"Modifiche salvate dalla redazione"},"Modifiche salvate");break;
     case "review":await saveBozza({stato:"in_revisione",_evento:"Messo in revisione"},"In revisione");break;
     case "approve":{const d=S.dirty;if(gate(d).length){toast("Risolvi prima i punti bloccanti.");return;}
-      await saveBozza({stato:"approvato",approvataIl:nowIso(),approvataDa:await who(),_evento:d.stato==="pubblicato"?"Correzione approvata per la ripubblicazione":"Approvato per la pubblicazione"},"Approvato: andrà online alla prossima scansione");break;}
+      await saveBozza({stato:"approvato",approvataIl:nowIso(),approvataDa:await who(),_evento:d.stato==="pubblicato"?"Correzione approvata per la ripubblicazione":"Approvato per la pubblicazione"},"Approvato: andrà online "+nextPubTxt(S.config));break;}
     case "publishnow":await fire("Avvio manuale dalla Scrivania: SOLO PUBBLICAZIONE delle bozze approvate e dei ritiri, senza nuova scansione.","Pubblicazione avviata: l'articolo sarà online tra pochi minuti");break;
     case "withdraw":S.confirm={id:S.dirty.id,act:"withdraw",msg:"Ritirare l'articolo dal sito? La pagina verrà rimossa alla prossima esecuzione."};renderEditor();break;
     case "withdraw-ok":S.confirm=null;await saveBozza({stato:"da_ritirare",_evento:"Ritiro richiesto dalla redazione"},"Ritiro richiesto");break;
@@ -673,8 +682,8 @@ document.addEventListener("click",async e=>{
     case "exmd":exportFile("md");break;
     case "exhtml":exportFile("html");break;
     case "autopub":try{await S.db.doc("config/impostazioni").update({pubblicazioneAutomatica:!(S.config.pubblicazioneAutomatica!==false)});toast("Impostazione salvata");}catch(err){toast("Salvataggio non riuscito.");}break;
-    case "savelim":{const lim=Math.max(0,Math.min(5,parseInt($("#s-lim").value,10)||0)),fin=Math.max(1,Math.min(14,parseInt($("#s-fin").value,10)||3));
-      try{await S.db.doc("config/impostazioni").update({limiteBozze:lim,finestraRecuperoGiorni:fin});toast("Limiti salvati");}catch(err){toast("Salvataggio non riuscito.");}break;}
+    case "savelim":{const lim=Math.max(0,Math.min(5,parseInt($("#s-lim").value,10)||0)),fin=Math.max(1,Math.min(14,parseInt($("#s-fin").value,10)||3)),ogni=Math.max(1,Math.min(14,parseInt($("#s-ogni").value,10)||3));
+      try{await S.db.doc("config/impostazioni").update({limiteBozze:lim,finestraRecuperoGiorni:fin,pubblicaOgniGiorni:ogni});toast("Limiti salvati");}catch(err){toast("Salvataggio non riuscito.");}break;}
     case "saveorario":{const v=$("#s-orario").value;const m=/^(\d{2}):(\d{2})$/.exec(v||"");if(!m){toast("Orario non valido.");return;}
       try{await S.db.doc("config/impostazioni").update({orario:v});}catch(err){toast("Salvataggio non riuscito.");return;}
       const tid=S.config.triggerId;if(!tid||!S.mcp){toast("Orario salvato: verrà applicato al collegamento.");return;}

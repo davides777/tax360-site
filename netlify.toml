@@ -1,4 +1,7 @@
-# Netlify pubblica SOLO la cartella site/ (strumenti e scrivania restano privati nell'archivio)
+# Netlify pubblica SOLO la cartella site/.
+# Ogni pubblicazione consuma crediti del piano gratuito: se in un invio non cambia nulla dentro site/
+# (es. modifiche a tool/ o scrivania/), Netlify salta la pubblicazione.
 [build]
   publish = "site"
   command = ""
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- site/"
