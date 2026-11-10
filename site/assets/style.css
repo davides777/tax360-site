@@ -216,3 +216,12 @@ nav.main-nav a.nav-cta{display:inline-flex;align-items:center;padding:.66rem 1.5
 nav.main-nav a.nav-cta:hover{background:var(--gold)!important;color:var(--navy-deep)!important}
 header.scrolled nav.main-nav a.nav-cta,header.solid nav.main-nav a.nav-cta{background:var(--navy)!important;border-color:var(--navy);color:#fff!important}
 header.scrolled nav.main-nav a.nav-cta:hover,header.solid nav.main-nav a.nav-cta:hover{background:var(--gold)!important;border-color:var(--gold);color:var(--navy-deep)!important}
+
+/* Profili soci: foto più piccola accanto alla biografia (stesso taglio 4:5) */
+.pp-grid.pp-grid{grid-template-columns:210px 1fr;gap:4rem}
+.pp-side .pp-photo-wrap{max-width:210px}
+.pp-side .pp-photo-wrap .pp-cap-name{font-size:1.18rem}
+.pp-side .pp-photo-wrap .pp-cap-role{font-size:.6rem;letter-spacing:.16em}
+.pp-side .pp-mail{font-size:.84rem}
+.pp-side .btn{padding:.85rem 1rem;font-size:.74rem}
+@media(max-width:900px){.pp-grid.pp-grid{grid-template-columns:1fr;gap:2.5rem}.pp-side.pp-side{max-width:210px}}
