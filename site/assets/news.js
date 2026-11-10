@@ -15,6 +15,15 @@
 
 const NEWS = /*NEWS:START*/[
   {
+    "data": "2026-11-10",
+    "cat": "Normativa",
+    "titolo": "IRPEF 2027, la proposta della legge di bilancio: aliquota del 33% fino a 55.000 euro",
+    "sintesi": "Il disegno di legge di bilancio 2027 propone, per il solo 2027, di alzare da 50.000 a 55.000 euro il limite dello scaglione IRPEF al 33%. Il risparmio massimo è di 500 euro di imposta lorda.",
+    "slug": "irpef-2027-proposta-aliquota-33-fino-55000-euro",
+    "url": "news/irpef-2027-proposta-aliquota-33-fino-55000-euro.html",
+    "fonte": "Camera dei Deputati"
+  },
+  {
     "data": "2026-11-09",
     "cat": "Normativa",
     "titolo": "Legge di bilancio 2027, la proposta sul forfettario: soglia a 100.000 euro per le imposte, l'IVA resta a 85.000",
