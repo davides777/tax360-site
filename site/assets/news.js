@@ -15,6 +15,15 @@
 
 const NEWS = /*NEWS:START*/[
   {
+    "data": "2026-11-13",
+    "cat": "Scadenze",
+    "titolo": "Campi Flegrei: sospesi i versamenti fiscali dal 31 luglio al 30 novembre 2026, si paga entro il 10 dicembre",
+    "sintesi": "Il D.L. 205/2026 sospende versamenti e adempimenti fiscali e contributivi in scadenza dal 31 luglio al 30 novembre 2026 per residenti e imprese in edifici sgomberati nell'area dei Campi Flegrei. Si paga in un'unica soluzione entro il 10 dicembre 2026.",
+    "slug": "campi-flegrei-sospensione-versamenti-fiscali-10-dicembre-2026",
+    "url": "news/campi-flegrei-sospensione-versamenti-fiscali-10-dicembre-2026.html",
+    "fonte": "Gazzetta Ufficiale"
+  },
+  {
     "data": "2026-11-10",
     "cat": "Normativa",
     "titolo": "IRPEF 2027, la proposta della legge di bilancio: aliquota del 33% fino a 55.000 euro",
