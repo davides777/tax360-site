@@ -181,3 +181,54 @@ def test_pubblicazione_e_ritiro(tmp_path):
 def test_markdown_non_esegue_html():
     out = publish.md_to_html("Testo <script>alert(1)</script> e [x](javascript:alert(1))")
     assert "<script>" not in out and "javascript:" not in out
+
+
+# 8 ─ Articolo basato sulla stampa specializzata (base "stampa")
+FF = "https://www.fiscal-focus.it/news-24/x"
+
+
+def bozza_stampa(**over):
+    d = bozza_valida(
+        base="stampa", statoAtto="pubblicato", fontiUfficiali=[],
+        titolo="IVA, dal 2027 cambia la rettifica della detrazione",
+        corpo="Secondo Fiscal Focus, dal 2027 la rettifica diventa analitica.\n\n## Cosa cambia\n\nTesto.",
+        fontiSpecialistiche=[{"testata": "Fiscal Focus", "titolo": "IVA", "url": FF, "letta": True}],
+        dateNote="Data dell'articolo di stampa; documento ufficiale non ancora consultato.",
+        scheda={"controlli": [{"dato": "decorrenza", "valore": "1/1/2027", "fonte": FF, "riferimento": "articolo",
+                               "esito": "verificato", "essenziale": True}], "dubbi": []})
+    d.update(over)
+    return d
+
+
+def test_8_base_stampa(tmp_path):
+    assert gate.check(bozza_stampa(), FONTI) == []
+    # la stessa bozza con base ufficiale resta bloccata
+    assert any("nessun documento ufficiale" in m for m in gate.check(bozza_stampa(base="ufficiale"), FONTI))
+    # testata non letta
+    d = bozza_stampa(); d["fontiSpecialistiche"][0]["letta"] = False
+    assert any("effettivamente letta" in m for m in gate.check(d, FONTI))
+    # apertura senza attribuzione
+    d = bozza_stampa(corpo="Dal 2027 la rettifica diventa analitica.\n\nCome riporta Fiscal Focus, cambia tutto.")
+    assert any("apertura deve citare la testata" in m for m in gate.check(d, FONTI))
+    # dato verificato su sito non approvato
+    d = bozza_stampa(); d["scheda"]["controlli"][0]["fonte"] = "https://www.blogfisco-esempio.it/x"
+    assert any("fonte non approvata" in m for m in gate.check(d, FONTI))
+    # dato non verificato blocca comunque
+    d = bozza_stampa(); d["scheda"]["controlli"][0]["esito"] = "da_verificare"
+    assert any("dato essenziale da verificare" in m for m in gate.check(d, FONTI))
+    # smistamento: notizia letta solo sulla stampa → candidata con base stampa, dopo le verificate
+    n = {"titolo": "x", "meritaArticolo": True, "impatto": 3, "fontiUfficiali": [],
+         "fontiSpecialistiche": [{"testata": "Fiscal Focus", "url": FF, "letta": True}]}
+    b = selection.build_briefing([n], [], FONTI)
+    assert b["daStampa"] and not b["verificate"]
+    c = selection.choose_for_article(b["verificate"], 1, b["daStampa"])
+    assert c and c[0]["baseArticolo"] == "stampa"
+    uff = {"titolo": "y", "meritaArticolo": True, "fontiUfficiali": [{"url": GU, "aperta": True}]}
+    b = selection.build_briefing([n, uff], [], FONTI)
+    assert selection.choose_for_article(b["verificate"], 1, b["daStampa"])[0]["baseArticolo"] == "ufficiale"
+    # la pagina lo dichiara al lettore
+    site = _site_copy(tmp_path)
+    r = publish.publish(bozza_stampa(), site, FONTI, today="2026-11-16")
+    page = open(r["file"], encoding="utf-8").read()
+    assert "Notizia da fonti di settore" in page and "Fonti di settore" in page
+    assert publish.read_index(site)[0][0]["fonte"] == "Fiscal Focus (fonte di settore)"

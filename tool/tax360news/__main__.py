@@ -33,7 +33,7 @@ def main(argv):
     elif cmd == "briefing":
         b = selection.build_briefing(_load(a[1]), _load(a[2]), _load(a[0]))
         lim = int(a[3]) if len(a) > 3 else 1
-        b["candidateArticolo"] = selection.choose_for_article(b["verificate"], lim)
+        b["candidateArticolo"] = selection.choose_for_article(b["verificate"], lim, b["daStampa"])
         out = b
     elif cmd == "gate":
         motivi = gate.check(_load(a[1]), _load(a[0]))

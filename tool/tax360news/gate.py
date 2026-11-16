@@ -2,10 +2,19 @@
 
 Una bozza può essere approvata/pubblicata SOLO se `check(...)` non restituisce
 motivi di blocco. La pubblicazione automatica e la Scrivania applicano la stessa
-regola: nessun dato fiscale essenziale può andare online senza riscontro su un
-documento ufficiale effettivamente consultato."""
+regola: nessun dato fiscale essenziale può andare online senza riscontro su una
+fonte approvata effettivamente consultata.
+
+Due basi possibili (campo `base` della bozza):
+- "ufficiale" (predefinita): serve un documento ufficiale aperto su un dominio
+  ufficiale approvato e i dati essenziali vanno verificati su fonti ufficiali;
+- "stampa": notizia basata sulla stampa specializzata approvata, in attesa del
+  documento ufficiale. Serve almeno una testata approvata effettivamente letta
+  (`letta: true`), citata già nell'apertura; i dati essenziali possono essere
+  verificati su una fonte approvata (ufficiale o specialistica). La pagina lo
+  dichiara al lettore."""
 import re
-from . import CATEGORIE, STATI_ATTO
+from . import BASI, CATEGORIE, STATI_ATTO
 from .domains import source_for
 
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -65,9 +74,21 @@ def check(draft, fonti):
             r.append("misura in proposta descritta come in vigore/applicabile")
 
     # --- fonti ---
+    base = draft.get("base") or "ufficiale"
+    if base not in BASI:
+        r.append("base della notizia non riconosciuta (ufficiale | stampa)")
     uff = [f for f in draft.get("fontiUfficiali") or []
            if f.get("aperta") and (source_for(f.get("url"), fonti) or {}).get("categoria") == "ufficiale"]
-    if not uff:
+    lette = [s for s in draft.get("fontiSpecialistiche") or []
+             if s.get("letta") and (source_for(s.get("url"), fonti) or {}).get("categoria") == "specialistica"]
+    if base == "stampa":
+        if not lette:
+            r.append("notizia da stampa specializzata senza alcuna testata approvata effettivamente letta")
+        else:
+            apertura = (draft.get("titolo", "") + " " + _first_paragraph(corpo)).lower()
+            if not any((s.get("testata") or "").strip().lower() in apertura for s in lette if s.get("testata")):
+                r.append("notizia da stampa specializzata: l'apertura deve citare la testata (\"Secondo <Testata>, ...\")")
+    elif not uff:
         r.append("nessun documento ufficiale consultato su un dominio ufficiale approvato (segnalazione da verificare)")
     for f in draft.get("fontiUfficiali") or []:
         if source_for(f.get("url"), fonti) is None:
@@ -94,8 +115,13 @@ def check(draft, fonti):
     for c in essenziali:
         if c.get("esito") != "verificato":
             r.append(f"dato essenziale da verificare: {c.get('dato')}")
-        elif (source_for(c.get("fonte"), fonti) or {}).get("categoria") != "ufficiale":
-            r.append(f"dato essenziale verificato senza fonte ufficiale: {c.get('dato')}")
+        else:
+            cat = (source_for(c.get("fonte"), fonti) or {}).get("categoria")
+            if base == "stampa":
+                if cat not in ("ufficiale", "specialistica"):
+                    r.append(f"dato essenziale verificato su una fonte non approvata: {c.get('dato')}")
+            elif cat != "ufficiale":
+                r.append(f"dato essenziale verificato senza fonte ufficiale: {c.get('dato')}")
     for d in scheda.get("dubbi") or []:
         if d.get("bloccante"):
             r.append("dubbio bloccante aperto: " + str(d.get("testo")))

@@ -28,6 +28,11 @@ STATIC_PAGES = ["", "chisiamo", "servizi", "news", "scadenziario", "contatti", "
                 "enrico-assunto", "davide-spiniello"]
 
 
+AVVISO_STAMPA = ('<p class="art-warn"><strong>Notizia da fonti di settore.</strong> Questo articolo si basa su '
+                 'quanto riportato dalla stampa specializzata indicata nei riferimenti: il documento ufficiale non '
+                 '&egrave; ancora stato consultato dalla redazione. Lo aggiorneremo appena disponibile.</p>')
+
+
 class PublishBlocked(Exception):
     pass
 
@@ -110,8 +115,11 @@ def render_article(d, site_dir, today=None):
     head = head.replace("</head>", extra + "</head>", 1)
 
     date = d.get("date") or {}
+    stampa = (d.get("base") or "ufficiale") == "stampa"
     facts = [("Stato", STATO_LABEL.get(d.get("statoAtto"), d.get("statoAtto")))]
-    facts.append(("Data del documento", data_it(date.get("pubblicazione"))))
+    if stampa:
+        facts.append(("Fonte", "Stampa specializzata — documento ufficiale non ancora consultato"))
+    facts.append(("Data della fonte" if stampa else "Data del documento", data_it(date.get("pubblicazione"))))
     facts.append(("Entrata in vigore", data_it(date["entrataInVigore"]) if date.get("entrataInVigore") else "Non applicabile o non ancora definita"))
     facts.append(("Decorrenza", data_it(date["decorrenza"]) if date.get("decorrenza") else "Non applicabile o non ancora definita"))
     for sc in date.get("scadenze") or []:
@@ -129,9 +137,10 @@ def render_article(d, site_dir, today=None):
         f'<li><a href="{esc(s["url"])}" target="_blank" rel="noopener">{esc(s.get("titolo") or s["url"])}</a>'
         f' — {esc(s.get("testata"))}{", " + esc(s.get("autore")) if s.get("autore") else ""}</li>'
         for s in d.get("fontiSpecialistiche") or [])
-    refs = f'<h3>Fonti ufficiali</h3><ul>{uff}</ul>'
+    refs = f'<h3>Fonti ufficiali</h3><ul>{uff}</ul>' if uff else ""
     if spec:
-        refs += f'<h3>Approfondimenti della stampa specializzata</h3><ul>{spec}</ul>'
+        titolo_spec = "Fonti di settore" if stampa else "Approfondimenti della stampa specializzata"
+        refs += f'<h3>{titolo_spec}</h3><ul>{spec}</ul>'
 
     meta_line = f"Pubblicato il {data_it(pub)}" + (f" &middot; Aggiornato il {data_it(agg)}" if agg else "")
     body = f'''<section class="page-hero">
@@ -149,7 +158,7 @@ def render_article(d, site_dir, today=None):
   <div class="container art-wrap">
     <article class="art">
       <aside class="art-facts"><div class="af-title">In sintesi</div><dl>{facts_html}</dl></aside>
-      <div class="art-body">{md_to_html(d["corpo"])}</div>
+      {AVVISO_STAMPA if stampa else ""}<div class="art-body">{md_to_html(d["corpo"])}</div>
       <div class="art-refs"><h2>Riferimenti</h2>{refs}</div>
       <p class="art-note">Contenuto informativo aggiornato alla data di pubblicazione: non sostituisce una consulenza
       sul caso specifico. Per valutare gli effetti sulla tua situazione <a href="../prenota.html">prenota un confronto con lo studio</a>.</p>
@@ -175,6 +184,7 @@ def render_article(d, site_dir, today=None):
 .af-row{{display:grid;grid-template-columns:150px 1fr;gap:1rem;font-size:.92rem}}
 .af-row dt{{color:#6b7480;font-weight:500}} .af-row dd{{color:var(--navy);font-weight:600}}
 .af-note{{margin-top:.8rem;font-size:.85rem;color:#5a6573;font-weight:300}}
+.art-warn{{background:#fff8e6;border:1px solid rgba(184,151,62,.45);border-radius:3px;padding:1rem 1.2rem;margin-bottom:2rem;font-size:.92rem;line-height:1.6;color:#4a3f1f}}
 .art-body{{font-size:1.06rem;line-height:1.85;color:#2c3845;font-weight:300}}
 .art-body p,.art-body ul,.art-body ol,.art-body table,.art-body blockquote{{margin-bottom:1.3rem}}
 .art-body h2{{font-family:var(--serif);font-size:1.8rem;color:var(--navy);font-weight:600;margin:2.4rem 0 .9rem;line-height:1.2}}
@@ -234,9 +244,13 @@ def publish(draft, site_dir, fonti, today=None):
         d["aggiornataIl"] = today
     open(path, "w", encoding="utf-8").write(render_article(d, site_dir, today))
     first_uff = next((f for f in d.get("fontiUfficiali") or [] if f.get("aperta")), {})
+    first_spec = next((s for s in d.get("fontiSpecialistiche") or [] if s.get("letta")), {})
+    fonte = first_uff.get("ente") or ""
+    if (d.get("base") or "ufficiale") == "stampa":
+        fonte = (first_spec.get("testata") or "Stampa specializzata") + " (fonte di settore)"
     entry = {"data": d["pubblicataIl"], "cat": d["categoria"], "titolo": d["titolo"],
              "sintesi": d["sintesi"], "slug": d["slug"], "url": f"news/{d['slug']}.html",
-             "fonte": first_uff.get("ente") or ""}
+             "fonte": fonte}
     items = [x for x in items if x["slug"] != d["slug"]] + [entry]
     write_index(site_dir, items)
     write_sitemap(site_dir, items)

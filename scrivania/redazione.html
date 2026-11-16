@@ -221,7 +221,7 @@ details.box>div{padding:0 14px 14px}
 
   <!-- FONTI -->
   <section class="panel" id="p-fonti" role="tabpanel">
-    <div class="head"><div><h1>Fonti approvate</h1><p>La scansione cerca e cita solo questi domini. Le fonti ufficiali servono a verificare; quelle specialistiche a scoprire e approfondire, sempre con attribuzione.</p></div></div>
+    <div class="head"><div><h1>Fonti approvate</h1><p>La scansione cerca e cita solo questi domini. Le fonti ufficiali servono a verificare; quelle specialistiche a scoprire e approfondire e, quando il documento ufficiale non è disponibile, possono reggere da sole un articolo, sempre attribuito e segnalato al lettore.</p></div></div>
     <div id="fontiBody"></div>
   </section>
 
@@ -283,8 +283,14 @@ function gate(d){
     if(!["proposta","disegno di legge","ddl","bozza","schema di decreto","in discussione","emendament","in esame","non ancora approvat"].some(w=>head.includes(w))) r.push("Misura in proposta: titolo o apertura devono dirlo");
     if(/\b(è|sono) (entrat[aoei] )?in vigore\b|\bsi applica dal\b/i.test(corpo)) r.push("Misura in proposta descritta come in vigore");
   }
+  const base=d.base||"ufficiale";
   const uff=(d.fontiUfficiali||[]).filter(f=>f.aperta&&(sourceFor(f.url)||{}).categoria==="ufficiale");
-  if(!uff.length) r.push("Nessun documento ufficiale consultato");
+  const lette=(d.fontiSpecialistiche||[]).filter(s=>s.letta&&(sourceFor(s.url)||{}).categoria==="specialistica");
+  if(base==="stampa"){
+    if(!lette.length) r.push("Notizia da stampa: nessuna testata approvata effettivamente letta");
+    else{const first=(corpo.split(/\n\s*\n/).find(b=>b.trim()&&!b.trim().startsWith("#"))||"");const ap=((d.titolo||"")+" "+first).toLowerCase();
+      if(!lette.some(s=>s.testata&&ap.includes(String(s.testata).toLowerCase()))) r.push("Notizia da stampa: l'apertura deve citare la testata");}
+  } else if(!uff.length) r.push("Nessun documento ufficiale consultato");
   for(const s of d.fontiSpecialistiche||[]){
     const src=sourceFor(s.url); if(!src||src.categoria!=="specialistica") r.push("Fonte specialistica non approvata: "+(s.url||""));
     if(!s.testata) r.push("Approfondimento senza testata");
@@ -293,7 +299,7 @@ function gate(d){
   for(const m of corpo.matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)) if(!sourceFor(m[1])) r.push("Link verso sito non approvato: "+m[1]);
   const ctl=((d.scheda||{}).controlli||[]).filter(c=>c.essenziale);
   if(!ctl.length) r.push("Nessun dato essenziale nella scheda di verifica");
-  for(const c of ctl){ if(c.esito!=="verificato") r.push("Dato essenziale da verificare: "+(c.dato||"?")); else if((sourceFor(c.fonte)||{}).categoria!=="ufficiale") r.push("Dato verificato senza fonte ufficiale: "+(c.dato||"?")); }
+  for(const c of ctl){ if(c.esito!=="verificato") r.push("Dato essenziale da verificare: "+(c.dato||"?")); else{const cat=(sourceFor(c.fonte)||{}).categoria; if(base==="stampa"){if(cat!=="ufficiale"&&cat!=="specialistica") r.push("Dato verificato su fonte non approvata: "+(c.dato||"?"));} else if(cat!=="ufficiale") r.push("Dato verificato senza fonte ufficiale: "+(c.dato||"?"));} }
   for(const x of (d.scheda||{}).dubbi||[]) if(x.bloccante) r.push("Dubbio bloccante: "+(x.testo||""));
   return r;
 }
@@ -404,6 +410,7 @@ function newsCard(n,daVer){
   const art=S.bozze.find(x=>x.notiziaId===n.id);
   const imp=Math.max(0,Math.min(5,+n.impatto||0));
   const tags=[chip(STATI_ATTO[n.statoAtto]||n.statoAtto||"—","info")];
+  if(!(n.fontiUfficiali||[]).some(f=>f.aperta)&&(n.fontiSpecialistiche||[]).some(s=>s.letta)) tags.push(chip("Letta su fonte di settore","gold"));
   if(n.classificazione==="sviluppo")tags.push(chip("Sviluppo","gold"));
   if(daVer)tags.push(chip("Da verificare","warn"));
   const uff=(n.fontiUfficiali||[]),spe=(n.fontiSpecialistiche||[]);
@@ -469,7 +476,7 @@ function renderEditor(){
       <button class="btn" data-act="exmd">Esporta .md</button><button class="btn" data-act="exhtml">Esporta .html</button>
     </div></div>`;
   h+=motivi.length?`<div class="gate blk"><b>Non pubblicabile: ${motivi.length} punt${motivi.length>1?"i":"o"} da risolvere</b><ul>${motivi.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>`
-                  :`<div class="gate okk"><b>Tutti i dati essenziali risultano verificati su fonte ufficiale.</b> ${d.stato==="pubblicato"?"Articolo online.":"Pronto per la pubblicazione."}</div>`;
+                  :`<div class="gate okk"><b>${d.base==="stampa"?"Dati essenziali verificati sulle fonti di settore approvate: la pagina indicherà che il documento ufficiale non è ancora stato consultato.":"Tutti i dati essenziali risultano verificati su fonte ufficiale."}</b> ${d.stato==="pubblicato"?"Articolo online.":"Pronto per la pubblicazione."}</div>`;
   const dis=ro?"disabled":"";
   h+=`<div class="grid2">
     ${fld("titolo","Titolo editoriale",d.titolo,dis,0)}
@@ -477,6 +484,7 @@ function renderEditor(){
   </div><div class="grid3" style="margin-top:12px">
     ${fld("slug","Slug (indirizzo)",d.slug,dis,80)}
     <div class="f"><label for="e-categoria">Categoria</label><select id="e-categoria" data-k="categoria" ${dis}>${CATEGORIE.map(c=>`<option${c===d.categoria?" selected":""}>${c}</option>`).join("")}</select></div>
+    <div class="f"><label for="e-base">Base dell'articolo</label><select id="e-base" data-k="base" ${dis}><option value="ufficiale"${(d.base||"ufficiale")==="ufficiale"?" selected":""}>Documento ufficiale</option><option value="stampa"${d.base==="stampa"?" selected":""}>Stampa specializzata (in attesa del documento)</option></select></div>
     <div class="f"><label for="e-statoAtto">Stato dell'atto</label><select id="e-statoAtto" data-k="statoAtto" ${dis}>${Object.entries(STATI_ATTO).map(([k,v])=>`<option value="${k}"${k===d.statoAtto?" selected":""}>${v}</option>`).join("")}</select></div>
   </div>
   <div class="f" style="margin-top:12px"><label for="e-metaDescription">Meta description</label><textarea id="e-metaDescription" data-k="metaDescription" rows="2" ${dis}>${esc(d.metaDescription||"")}</textarea>${cnt(d.metaDescription,160,50)}</div>
@@ -510,7 +518,7 @@ function renderEditor(){
   // fonti dell'articolo
   h+=`<details class="box"><summary>Fonti citate nell'articolo<span class="note">${(d.fontiUfficiali||[]).length} ufficiali · ${(d.fontiSpecialistiche||[]).length} specialistiche</span></summary><div>
     <div class="label" style="margin:6px 0">Ufficiali</div><ul>${(d.fontiUfficiali||[]).map((f,i)=>`<li>${link(f.url,f.titolo)} ${f.aperta?chip("consultata","ok"):chip("non consultata","warn")}${ro||f.aperta?"":` <button class="btn" data-opened="${i}" style="padding:1px 8px">L'ho consultata io</button>`}</li>`).join("")||"<li class='note'>Nessuna</li>"}</ul>
-    <div class="label" style="margin:10px 0 6px">Specialistiche</div><ul>${(d.fontiSpecialistiche||[]).map(s=>`<li>${link(s.url,s.titolo)} — ${esc(s.testata||"")}</li>`).join("")||"<li class='note'>Nessuna</li>"}</ul>
+    <div class="label" style="margin:10px 0 6px">Specialistiche</div><ul>${(d.fontiSpecialistiche||[]).map((s,i)=>`<li>${link(s.url,s.titolo)} — ${esc(s.testata||"")} ${s.letta?chip("letta","ok"):chip("non letta","warn")}${ro||s.letta?"":` <button class="btn" data-letta="${i}" style="padding:1px 8px">L'ho letta io</button>`}</li>`).join("")||"<li class='note'>Nessuna</li>"}</ul>
   </div></details>`;
   if(d.storia&&d.storia.length) h+=`<details class="box"><summary>Cronologia<span class="note">${d.storia.length} eventi</span></summary><div><ul>${d.storia.slice().reverse().map(x=>`<li><span class="mono">${dtIt(x.quando)}</span> — ${esc(x.cosa)}</li>`).join("")}</ul></div></details>`;
   box.innerHTML=h+`</div>`;
@@ -664,6 +672,7 @@ document.addEventListener("click",async e=>{
   if(t.dataset.delfonte){S.confirm={act:"delfonte",id:t.dataset.delfonte};renderFonti();return;}
   if(t.dataset.rmarg!=null){const a=(S.config.argomenti||[]).filter((_,i)=>i!==+t.dataset.rmarg);try{await S.db.doc("config/impostazioni").update({argomenti:a});}catch(err){toast("Salvataggio non riuscito.");}return;}
   if(t.dataset.unblock!=null&&S.dirty){S.dirty.scheda.dubbi[+t.dataset.unblock].bloccante=false;renderEditor();return;}
+  if(t.dataset.letta!=null&&S.dirty){S.dirty.fontiSpecialistiche[+t.dataset.letta].letta=true;S.dirty.fontiSpecialistiche[+t.dataset.letta].lettaDa="redazione";renderEditor();return;}
   if(t.dataset.opened!=null&&S.dirty){S.dirty.fontiUfficiali[+t.dataset.opened].aperta=true;S.dirty.fontiUfficiali[+t.dataset.opened].consultataDa="redazione";renderEditor();return;}
   const a=t.dataset.act;if(!a)return;
   if(t.id==="runNow")return;

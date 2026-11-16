@@ -70,9 +70,10 @@ Per ogni novità nel periodo che riguarda la fiscalità italiana (o UE con effet
 - Compila la notizia (JSON) con: `titolo, ente, tipoDocumento, identificativo, statoAtto`
   (`proposta | pubblicato | in_vigore | in_attesa_attuazione | prassi | giurisprudenza`),
   `date: {pubblicazione, entrataInVigore, decorrenza, scadenze: [{data, descrizione}]}` — tieni **distinte** le quattro informazioni,
-  `cheCosa, chi, daQuando, fontiUfficiali: [{titolo, ente, url, aperta: true|false}], fontiSpecialistiche: [{testata, autore, titolo, url}],
+  `cheCosa, chi, daQuando, fontiUfficiali: [{titolo, ente, url, aperta: true|false}], fontiSpecialistiche: [{testata, autore, titolo, url, letta: true|false}],
   impatto (1-5), urgenza (1-5), meritaArticolo (bool), titoloProvvisorio, motivo, dataVerifica (oggi)`.
 - `aperta: true` **solo** se hai effettivamente letto il documento ufficiale. Altrimenti indica `documentoDaReperire`.
+- `letta: true` **solo** se hai effettivamente aperto e letto l'articolo della testata (non basta il titolo nei risultati di ricerca).
 - Distingui: proposta / provvedimento pubblicato / in vigore / in attesa di attuazione / prassi / pronuncia (organo, data, numero).
 - Per le pronunce: organo, data, numero quando verificabile, ambito della decisione.
 - `meritaArticolo: true` solo se la novità cambia una decisione o un adempimento, chiarisce un dubbio ricorrente o introduce una scadenza.
@@ -81,7 +82,8 @@ Per ogni novità nel periodo che riguarda la fiscalità italiana (o UE con effet
 ## 7. Briefing
 Metti le notizie in `notizie.json` e lancia
 `python -m tax360news briefing fonti.json notizie.json storico.json <config.limiteBozze>`.
-Risultato: `verificate`, `segnalazioni` (da verificare), `doppioni` (scartali), `candidateArticolo`, `nessunaNovita`.
+Risultato: `verificate`, `segnalazioni` (da verificare), `daStampa` (segnalazioni lette su una testata approvata: possono diventare articolo),
+`doppioni` (scartali), `candidateArticolo` (ognuna con `baseArticolo`: "ufficiale" o "stampa"; prima le ufficiali), `nessunaNovita`.
 - Scrivi nella scrivania ogni notizia nuova in `notizie/<id>`; per una notizia `sviluppo` aggiorna quella esistente
   aggiungendo a `aggiornamenti` `{data, cosaCambia}` e i campi cambiati (riportali anche in `cambiamenti`).
 - Scrivi `briefing/<AAAA-MM-GG>`: `{data, scansioneId, sintesi (2-3 frasi), notizie: [id verificate in ordine],
@@ -91,8 +93,9 @@ Risultato: `verificate`, `segnalazioni` (da verificare), `doppioni` (scartali), 
 ## 8. Articolo (al massimo `config.limiteBozze` automatici al giorno)
 Candidati: `candidateArticolo` + le notizie con `richiestaBozza: true` senza bozza (queste sempre, anche oltre il limite).
 Se non ci sono candidati: nessun articolo (solo briefing).
-Per ogni candidato, approfondisci sul documento ufficiale e scrivi la bozza (JSON) con questi campi:
-`id (= slug), stato, notiziaId, categoria (Normativa|Agevolazioni|Scadenze|Approfondimenti), titolo, titoloSeo (≤ 60 car.),
+Per ogni candidato, approfondisci sul documento ufficiale (se `baseArticolo` è "stampa", fai prima un ultimo tentativo di reperirlo:
+se lo leggi, l'articolo diventa a base "ufficiale") e scrivi la bozza (JSON) con questi campi:
+`id (= slug), stato, notiziaId, base ("ufficiale" | "stampa"), categoria (Normativa|Agevolazioni|Scadenze|Approfondimenti), titolo, titoloSeo (≤ 60 car.),
 slug (minuscole-trattini), metaDescription (120-155 car.), sintesi (1-2 frasi), statoAtto, date{...}, dateNote,
 corpo (Markdown), fontiUfficiali, fontiSpecialistiche, scheda{controlli, dubbi, puntiRevisore, fontiConsultate}, creata, aggiornata, storia`.
 
@@ -104,14 +107,20 @@ corpo (Markdown), fontiUfficiali, fontiSpecialistiche, scheda{controlli, dubbi, 
 - Se è una proposta: dillo nel titolo o in apertura ("proposta", "disegno di legge", "in esame") e usa il condizionale.
 - Link diretti ai documenti vicino alle affermazioni che supportano, **solo verso domini approvati**.
 - Le interpretazioni della stampa specializzata vanno attribuite nel testo ("Secondo <Testata>, ...").
+- **Articolo a base "stampa"** (documento ufficiale non ancora consultato): l'apertura cita la testata ("Secondo <Testata>, ...");
+  ogni dato è attribuito; se possibile incrocia almeno due testate approvate e segnala nella scheda eventuali divergenze;
+  indica l'atto ufficiale atteso o di riferimento, se noto, senza linkare documenti non letti; `date.pubblicazione` = data
+  dell'articolo di stampa (spiegalo in `dateNote`); niente "Cosa fare" su adempimenti non confermati.
+  La pagina mostrerà da sola l'avviso "Notizia da fonti di settore". Quando, in una scansione successiva, il documento
+  ufficiale viene letto, aggiorna l'articolo come sviluppo (`base: "ufficiale"`, controlli riverificati) e ripubblicalo.
 - Testo originale: nessuna riproduzione di articoli; citazioni brevi (meno di 15 parole), tra virgolette, attribuite.
 - Italiano chiaro, professionale e concreto; termini tecnici spiegati; niente titoli allarmistici o promozionali;
   dai del "voi" o resta impersonale; nessun parere sul caso specifico.
 
 **Scheda interna (`scheda`, non pubblicata)**
 - `controlli`: un elemento per ogni dato fiscale decisivo (importi, aliquote, soglie, requisiti, eccezioni,
-  destinatari, decorrenze, scadenze): `{dato, valore, fonte (URL del documento ufficiale), riferimento (art./comma/paragrafo/pagina),
-  essenziale: true|false, esito: "verificato"|"da_verificare"}`. "verificato" solo se l'hai letto nel documento ufficiale.
+  destinatari, decorrenze, scadenze): `{dato, valore, fonte (URL del documento ufficiale; per base "stampa" anche l'URL dell'articolo letto), riferimento (art./comma/paragrafo/pagina),
+  essenziale: true|false, esito: "verificato"|"da_verificare"}`. "verificato" solo se l'hai letto nella fonte indicata.
 - `dubbi`: `{testo, bloccante}` per i punti incerti; `puntiRevisore`: cosa controllare; `fontiConsultate`: `{url, titolo, esito}`.
 
 **Controllo e pubblicazione**

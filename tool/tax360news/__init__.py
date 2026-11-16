@@ -14,4 +14,5 @@ modello e che sono coperte da prove ripetibili (tool/tests):
 
 CATEGORIE = ("Normativa", "Agevolazioni", "Scadenze", "Approfondimenti")
 STATI_ATTO = ("proposta", "pubblicato", "in_vigore", "in_attesa_attuazione", "prassi", "giurisprudenza")
+BASI = ("ufficiale", "stampa")   # su cosa si fonda l'articolo
 STATI_BOZZA = ("da_verificare", "in_revisione", "approvato", "pubblicato", "da_ritirare", "ritirato")
