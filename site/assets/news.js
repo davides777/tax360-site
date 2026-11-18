@@ -15,6 +15,15 @@
 
 const NEWS = /*NEWS:START*/[
   {
+    "data": "2026-11-18",
+    "cat": "Agevolazioni",
+    "titolo": "Credito d'imposta gasolio per l'autotrasporto: domande dal 19 al 30 novembre per le spese di settembre e inizio ottobre",
+    "sintesi": "Il D.L. 193/2026 estende il credito d'imposta gasolio alle spese dal 1° settembre al 5 ottobre 2026 (limite 60 milioni); secondo la stampa di settore le domande si presentano dal 19 al 30 novembre 2026.",
+    "slug": "credito-gasolio-autotrasporto-domande-entro-30-novembre-2026",
+    "url": "news/credito-gasolio-autotrasporto-domande-entro-30-novembre-2026.html",
+    "fonte": "FISCOeTASSE (fonte di settore)"
+  },
+  {
     "data": "2026-11-13",
     "cat": "Scadenze",
     "titolo": "Campi Flegrei: sospesi i versamenti fiscali dal 31 luglio al 30 novembre 2026, si paga entro il 10 dicembre",
