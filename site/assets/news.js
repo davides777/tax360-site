@@ -15,6 +15,24 @@
 
 const NEWS = /*NEWS:START*/[
   {
+    "data": "2026-11-21",
+    "cat": "Normativa",
+    "titolo": "Manovra 2027, la proposta: sostitutiva dell'1% sugli aumenti di reddito dei giovani dipendenti",
+    "sintesi": "Il disegno di legge di bilancio 2027 propone di tassare all'1%, fino a 2.500 euro, gli aumenti di reddito 2027 dei dipendenti privati nati dopo il 1997 con reddito fino a 28.000 euro.",
+    "slug": "manovra-2027-proposta-sostitutiva-1-per-cento-aumenti-giovani-dipendenti",
+    "url": "news/manovra-2027-proposta-sostitutiva-1-per-cento-aumenti-giovani-dipendenti.html",
+    "fonte": "Camera dei Deputati"
+  },
+  {
+    "data": "2026-11-21",
+    "cat": "Normativa",
+    "titolo": "Fattura elettronica, dall'11 gennaio 2027 le specifiche tecniche 1.10 adeguate al Testo unico IVA",
+    "sintesi": "Secondo la stampa specializzata, l'Agenzia delle Entrate ha pubblicato le specifiche tecniche 1.10 della fattura elettronica: riferimenti normativi aggiornati al Testo unico IVA, nuovo codice RF21 per ODV e APS forfetarie, utilizzo dall'11 gennaio 2027.",
+    "slug": "fattura-elettronica-specifiche-tecniche-1-10-testo-unico-iva-2027",
+    "url": "news/fattura-elettronica-specifiche-tecniche-1-10-testo-unico-iva-2027.html",
+    "fonte": "Eutekne (fonte di settore)"
+  },
+  {
     "data": "2026-11-18",
     "cat": "Agevolazioni",
     "titolo": "Credito d'imposta gasolio per l'autotrasporto: domande dal 19 al 30 novembre per le spese di settembre e inizio ottobre",
