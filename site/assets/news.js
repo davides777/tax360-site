@@ -15,6 +15,33 @@
 
 const NEWS = /*NEWS:START*/[
   {
+    "data": "2026-11-24",
+    "cat": "Normativa",
+    "titolo": "Manovra 2027, la proposta: Tobin tax raddoppiata, 0,8% sulle azioni dal 2027",
+    "sintesi": "Il disegno di legge di bilancio 2027 propone di portare l'imposta sulle transazioni finanziarie dallo 0,4% allo 0,8% sui trasferimenti di azioni e dallo 0,04% allo 0,08% sulle negoziazioni ad alta frequenza, dal 1° gennaio 2027.",
+    "slug": "manovra-2027-proposta-tobin-tax-0-8-per-cento-azioni",
+    "url": "news/manovra-2027-proposta-tobin-tax-0-8-per-cento-azioni.html",
+    "fonte": "Camera dei Deputati"
+  },
+  {
+    "data": "2026-11-24",
+    "cat": "Normativa",
+    "titolo": "Manovra 2027, la proposta: ritenuta tra imprese all'1% nel 2028 e al 2% dal 2029",
+    "sintesi": "Il disegno di legge di bilancio 2027 propone di portare la ritenuta sui pagamenti tra imprese all'1% nel 2028 e al 2% dal 2029, il doppio di quanto previsto oggi. In esame anche la soglia di 30.000 euro di debiti a ruolo per il blocco delle compensazioni in F24.",
+    "slug": "manovra-2027-proposta-ritenuta-tra-imprese-1-per-cento-2028-2-per-cento-2029",
+    "url": "news/manovra-2027-proposta-ritenuta-tra-imprese-1-per-cento-2028-2-per-cento-2029.html",
+    "fonte": "Camera dei Deputati"
+  },
+  {
+    "data": "2026-11-24",
+    "cat": "Approfondimenti",
+    "titolo": "Cedolare secca anche se l'inquilino è un'impresa o un professionista: la sentenza delle Sezioni Unite",
+    "sintesi": "Con la sentenza n. 29947 del 24 novembre 2026 le Sezioni Unite della Cassazione hanno stabilito che, per la cedolare secca, contano la qualità del locatore e l'uso abitativo effettivo dell'immobile, non la natura del conduttore: il regime è possibile anche con inquilini imprese, professionisti o enti, anche per foresterie.",
+    "slug": "cedolare-secca-conduttore-impresa-foresteria-sezioni-unite-29947-2026",
+    "url": "news/cedolare-secca-conduttore-impresa-foresteria-sezioni-unite-29947-2026.html",
+    "fonte": "Corte di Cassazione"
+  },
+  {
     "data": "2026-11-21",
     "cat": "Normativa",
     "titolo": "Manovra 2027, la proposta: sostitutiva dell'1% sugli aumenti di reddito dei giovani dipendenti",
