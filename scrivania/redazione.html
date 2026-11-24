@@ -246,10 +246,14 @@ const DEF_CONFIG={orario:"08:00",limiteBozze:1,finestraRecuperoGiorni:3,pubblica
 /* Prossimo giorno utile per pubblicare sul sito (ogni pubblicazione consuma crediti Netlify) */
 function nextPub(c){c=c||DEF_CONFIG;const n=Math.max(1,parseInt(c.pubblicaOgniGiorni,10)||1);
   const oggi=new Date(new Date().toLocaleString("en-US",{timeZone:"Europe/Rome"}));oggi.setHours(0,0,0,0);
-  if(!c.ultimaPubblicazione)return {data:oggi,oggi:true};
-  const d=new Date(c.ultimaPubblicazione+"T00:00:00");d.setDate(d.getDate()+n);
+  let d=oggi;
+  if(c.ultimaPubblicazione){d=new Date(c.ultimaPubblicazione+"T00:00:00");d.setDate(d.getDate()+n);}
+  if(c.pubblicazioniSospese){
+    if(!c.ripresaPubblicazioni)return {sospese:true};
+    const r=new Date(c.ripresaPubblicazioni+"T00:00:00");return {data:r,oggi:r<=oggi,pausa:true};}
   return {data:d,oggi:d<=oggi};}
-function nextPubTxt(c){const p=nextPub(c);return p.oggi?"alla prossima scansione":"dal "+p.data.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});}
+function nextPubTxt(c){const p=nextPub(c);if(p.sospese)return "alla ripresa delle pubblicazioni (sospese)";
+  return p.oggi?"alla prossima scansione":"dal "+p.data.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"})+(p.pausa?" (fine della pausa)":"");}
 
 /* ---------------- state ---------------- */
 const S={db:null,user:null,mcp:null,dl:null,canWrite:true,config:null,configVer:null,fonti:[],scansioni:[],briefing:[],notizie:[],bozze:[],
@@ -595,6 +599,9 @@ function renderSettings(){
   <div class="card"><div class="label">Pubblicazione</div>
     <div style="display:flex;gap:12px;align-items:center"><button class="switch" role="switch" aria-label="Pubblicazione automatica" aria-checked="${c.pubblicazioneAutomatica!==false}" data-act="autopub" ${dis}></button>
     <div><b>Pubblicazione automatica degli articoli verificati</b><div class="note">Se disattivata, ogni bozza resta in revisione finché non la approvi tu.</div></div></div>
+    <div style="display:flex;gap:12px;align-items:center"><button class="switch" role="switch" aria-label="Sospendi le pubblicazioni" aria-checked="${!!c.pubblicazioniSospese}" data-act="pausa" ${dis}></button>
+    <div><b>Sospendi le pubblicazioni sul sito</b><div class="note">Ricerca, briefing e bozze continuano ogni giorno; gli articoli approvati restano in coda e vanno online tutti insieme alla ripresa. Utile quando i crediti Netlify del mese stanno per finire. I ritiri di articoli restano attivi.</div></div></div>
+    ${c.pubblicazioniSospese?`<div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap"><div class="f"><label for="s-ripresa">Riprendi le pubblicazioni dal</label><input id="s-ripresa" type="date" value="${esc(c.ripresaPubblicazioni||"")}" ${dis}></div><button class="btn" data-act="saveripresa" ${dis}>Salva data</button></div>`:""}
     <div class="f"><label for="s-ogni">Pubblica sul sito ogni (giorni)</label><input id="s-ogni" type="number" min="1" max="14" value="${esc(c.pubblicaOgniGiorni||1)}" ${dis}></div>
     <p class="note" style="margin:0">Ricerca e briefing restano quotidiani. Gli articoli approvati si mettono in coda e vanno online tutti insieme con un'unica pubblicazione, che sul piano gratuito di Netlify consuma crediti. Ultima pubblicazione: <b>${c.ultimaPubblicazione?esc(new Date(c.ultimaPubblicazione+"T00:00:00").toLocaleDateString("it-IT",{day:"numeric",month:"long"})):"—"}</b> · prossima: <b>${esc(nextPubTxt(c))}</b>.</p>
     <div class="grid2"><div class="f"><label for="s-lim">Bozze automatiche al giorno (massimo)</label><input id="s-lim" type="number" min="0" max="5" value="${esc(c.limiteBozze)}" ${dis}></div>
@@ -690,6 +697,10 @@ document.addEventListener("click",async e=>{
     case "addctl":S.dirty.scheda.controlli.push({dato:"",valore:"",riferimento:"",fonte:"",essenziale:true,esito:"da_verificare"});renderEditor();break;
     case "exmd":exportFile("md");break;
     case "exhtml":exportFile("html");break;
+    case "pausa":{const on=!S.config.pubblicazioniSospese;
+      try{await S.db.doc("config/impostazioni").update(on?{pubblicazioniSospese:true}:{pubblicazioniSospese:false,ripresaPubblicazioni:null});toast(on?"Pubblicazioni sospese: gli articoli restano in coda":"Pubblicazioni riattivate");}catch(err){toast("Salvataggio non riuscito.");}break;}
+    case "saveripresa":{const v=$("#s-ripresa").value;if(v&&!/^\d{4}-\d{2}-\d{2}$/.test(v)){toast("Data non valida.");return;}
+      try{await S.db.doc("config/impostazioni").update({ripresaPubblicazioni:v||null});toast(v?"Ripresa impostata":"Data di ripresa rimossa");}catch(err){toast("Salvataggio non riuscito.");}break;}
     case "autopub":try{await S.db.doc("config/impostazioni").update({pubblicazioneAutomatica:!(S.config.pubblicazioneAutomatica!==false)});toast("Impostazione salvata");}catch(err){toast("Salvataggio non riuscito.");}break;
     case "savelim":{const lim=Math.max(0,Math.min(5,parseInt($("#s-lim").value,10)||0)),fin=Math.max(1,Math.min(14,parseInt($("#s-fin").value,10)||3)),ogni=Math.max(1,Math.min(14,parseInt($("#s-ogni").value,10)||3));
       try{await S.db.doc("config/impostazioni").update({limiteBozze:lim,finestraRecuperoGiorni:fin,pubblicaOgniGiorni:ogni});toast("Limiti salvati");}catch(err){toast("Salvataggio non riuscito.");}break;}

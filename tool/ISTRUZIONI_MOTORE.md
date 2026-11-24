@@ -30,8 +30,12 @@ Ogni pubblicazione sul sito consuma crediti del piano gratuito di Netlify, quind
 - È **giorno di pubblicazione** se vale almeno una di queste condizioni: il messaggio contiene "SOLO PUBBLICAZIONE";
   `config.ultimaPubblicazione` è assente; oggi ≥ `config.ultimaPubblicazione` + `config.pubblicaOgniGiorni` giorni
   (se `pubblicaOgniGiorni` manca, vale 1).
+- **Pausa:** se `config.pubblicazioniSospese` è vera, **non** è giorno di pubblicazione (salvo "SOLO PUBBLICAZIONE"),
+  anche se il calendario lo prevederebbe. Fa eccezione il caso in cui `config.ripresaPubblicazioni` (AAAA-MM-GG) sia
+  impostata e oggi ≥ quella data: allora è giorno di pubblicazione e, dopo un salvataggio riuscito (passo 3) o se non c'era
+  nulla da pubblicare, imposta `pubblicazioniSospese: false` e rimuovi `ripresaPubblicazioni`.
 - Ricerca, verifica, briefing e bozze si fanno **ogni giorno** (non toccano il sito).
-- I ritiri (`da_ritirare`) si eseguono sempre, anche fuori calendario: correggere un errore viene prima del risparmio.
+- I ritiri (`da_ritirare`) si eseguono anche fuori calendario (anche durante la pausa): correggere un errore viene prima del risparmio.
 - Ordine nell'esecuzione normale: passi 1, 4, 5, 6, 7, 8, poi il passo 2 (coda) e il passo 3 (un solo salvataggio), poi 9 e 11.
 
 ## 2. Coda di pubblicazione
@@ -39,7 +43,7 @@ Ogni pubblicazione sul sito consuma crediti del piano gratuito di Netlify, quind
   `python -m tax360news publish fonti.json bozza.json ../site`.
   - Esito 0 → aggiorna la bozza: `stato: "pubblicato"`, `url`, `pubblicataIl` (data), evento in `storia`.
   - Esito 2 → `stato: "da_verificare"` e aggiungi i motivi a `scheda.puntiRevisore`.
-- Per ogni bozza con `stato: "da_ritirare"` (sempre): `python -m tax360news unpublish <slug> ../site` → `stato: "ritirato"`.
+- Per ogni bozza con `stato: "da_ritirare"` (sempre, anche durante la pausa): `python -m tax360news unpublish <slug> ../site` → `stato: "ritirato"`.
 - Fuori dal giorno di pubblicazione le bozze approvate restano `approvato` (in coda): non pubblicarle.
 - **Non pubblicare mai a mano**: solo tramite il comando `publish`, che applica il controllo bloccante.
 
